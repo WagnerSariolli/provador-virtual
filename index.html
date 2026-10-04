@@ -1,0 +1,1234 @@
+<title>Provador Sob Medida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: provador em três colunas — medidas | manequim no palco com fita métrica | peça + análise de caimento; coleção em grade abaixo */
+:root{
+  --bg:#F5F0F2; --surface:#FFFFFF; --surface-2:#FAF6F8; --ink:#25161E; --muted:#7B6772; --line:#E6DAE0;
+  --accent:#8E1F52; --accent-ink:#FFFFFF; --accent-soft:#F6E3EC;
+  --stage-a:#F1E9ED; --stage-b:#E4D7DE; --floor:#CDBCC5; --tape:#F3D774; --tape-ink:#4A3A12;
+  --wall-a:#F0E7EB; --wall-b:#E5D7DE; --wainscot:#E8DCE2; --floor-a:#C9AE98; --floor-b:#B89A83; --glow:#FFFFFF;
+  --tight:#D23A3A; --snug:#C98510; --ideal:#23905F; --loose:#3A78CC; --excess:#23498A;
+  --font-display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161015; --surface:#1F171C; --surface-2:#271D23; --ink:#F4EAEF; --muted:#B39DA9; --line:#3A2B33;
+    --accent:#E2709F; --accent-ink:#22121A; --accent-soft:#3A2030;
+    --stage-a:#261B21; --stage-b:#1A1217; --floor:#3B2C34; --tape:#C9AC4A; --tape-ink:#1E1606;
+    --wall-a:#251B21; --wall-b:#2E222A; --wainscot:#2A1F26; --floor-a:#3D2C25; --floor-b:#33241E; --glow:#7A5566;
+    --tight:#F06464; --snug:#EBAA3A; --ideal:#4CC08A; --loose:#6CA3EE; --excess:#93B4F5;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161015; --surface:#1F171C; --surface-2:#271D23; --ink:#F4EAEF; --muted:#B39DA9; --line:#3A2B33;
+  --accent:#E2709F; --accent-ink:#22121A; --accent-soft:#3A2030;
+  --stage-a:#261B21; --stage-b:#1A1217; --floor:#3B2C34; --tape:#C9AC4A; --tape-ink:#1E1606;
+    --wall-a:#251B21; --wall-b:#2E222A; --wainscot:#2A1F26; --floor-a:#3D2C25; --floor-b:#33241E; --glow:#7A5566;
+  --tight:#F06464; --snug:#EBAA3A; --ideal:#4CC08A; --loose:#6CA3EE; --excess:#93B4F5;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-body);padding-inline:16px;padding-block:0 48px}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1320px;margin:0 auto}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:-16px;padding:12px 16px}
+.top .wrap{display:flex;align-items:center;gap:24px}
+.brand{font-family:var(--font-display);font-size:26px;font-weight:600;letter-spacing:-.01em;line-height:1}
+.brand i{font-weight:400;color:var(--accent)}
+.nav{display:flex;gap:18px;margin-left:auto;align-items:center}
+.nav a{color:var(--muted);text-decoration:none;font-weight:500}
+.nav a:hover{color:var(--ink)}
+.bag-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ink);background:transparent;border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:600}
+.bag-btn .n{background:var(--accent);color:var(--accent-ink);border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+
+/* Intro */
+.intro{display:flex;flex-wrap:wrap;align-items:end;gap:12px 40px;padding-block:28px 20px}
+.intro h1{font-family:var(--font-display);font-weight:500;font-size:clamp(34px,5vw,56px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.intro h1 em{color:var(--accent)}
+.intro p{max-width:56ch;margin:0;color:var(--muted)}
+
+/* Room grid */
+.room{display:grid;grid-template-columns:290px minmax(0,1fr) 380px;grid-template-areas:"meas stage detail";gap:20px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.meas{grid-area:meas}.stage{grid-area:stage}.detail{grid-area:detail}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.panel h2{font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.1;margin:4px 0 0;text-wrap:balance}
+.panel h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0;color:var(--muted);font-weight:600}
+
+/* Measurements */
+.fields{display:grid;gap:8px;margin-top:14px}
+.field{display:grid;grid-template-columns:1fr 92px;align-items:center;gap:8px}
+.field label{font-weight:600;font-size:14px}
+.field label small{display:block;font-weight:400;color:var(--muted);font-size:12px;line-height:1.3}
+.num{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding-right:8px}
+.num input{width:100%;min-width:0;border:0;background:transparent;padding:7px 4px 7px 10px;font-family:var(--font-mono);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
+.num input:focus{outline:none}
+.num:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.num span{font-size:12px;color:var(--muted);font-family:var(--font-mono)}
+.num.bad{border-color:var(--tight)}
+.sub{margin-top:18px;display:grid;gap:8px}
+.skins{display:flex;gap:8px;flex-wrap:wrap}
+.skins button{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer}
+.skins button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:7px 4px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hint{font-size:12px;color:var(--muted);margin:0;line-height:1.4}
+.bodytype{margin-top:18px;padding:14px;border-radius:10px;background:var(--accent-soft)}
+.bodytype strong{font-family:var(--font-display);font-size:22px;font-weight:600;display:block;line-height:1.1;margin-top:2px}
+.bodytype p{margin:6px 0 0;font-size:13px}
+.bodytype .ratio{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-top:6px}
+.example-note{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:12px;font-size:12px;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);font-weight:600;cursor:pointer;font-size:12px;text-decoration:underline;text-underline-offset:2px}
+details.howto{margin-top:12px;font-size:13px}
+details.howto summary{cursor:pointer;font-weight:600;color:var(--accent)}
+details.howto ul{padding-left:18px;margin:8px 0 0;color:var(--muted)}
+
+/* Stage */
+.stage{padding:0;overflow:hidden;background:var(--wall-a)}
+.stage-head{position:relative;z-index:1;background:var(--wall-a);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px 6px}
+.toggles{display:flex;gap:14px;flex-wrap:wrap}
+.tg{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;cursor:pointer;user-select:none}
+.tg input{appearance:none;width:30px;height:18px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .15s}
+.tg input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.tg input:checked{background:var(--accent)}
+.tg input:checked::after{transform:translateX(12px)}
+#figure{display:block;overflow:visible;width:100%;height:auto;max-height:calc(100vh - 150px);min-height:420px}
+.legend{position:relative;display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 16px 14px;font-size:12px;color:var(--muted);background:var(--surface);border-top:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* SVG text */
+.c-title{font:600 7.5px var(--font-body);letter-spacing:.12em;text-transform:uppercase;fill:var(--muted)}
+.c-status{font:700 11px var(--font-body)}
+.c-val{font:400 8.5px var(--font-mono);fill:var(--muted)}
+.r-num{font:500 7px var(--font-mono);fill:var(--tape-ink)}
+.r-h{font:600 9px var(--font-mono);fill:var(--ink)}
+
+/* Detail */
+.price{font-family:var(--font-mono);font-size:18px;margin:6px 0 0;font-variant-numeric:tabular-nums}
+.desc{color:var(--muted);font-size:14px;margin:8px 0 0}
+.block{margin-top:18px;display:grid;gap:8px}
+.block-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.block-head .val{font-size:13px;font-weight:600}
+.colors{display:flex;gap:8px}
+.colors button{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+.colors button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.sizes{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.sizes button{position:relative;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 0 7px;cursor:pointer;font-family:var(--font-mono);font-weight:500;display:grid;justify-items:center;gap:4px}
+.sizes button .dot{width:7px;height:7px;border-radius:50%}
+.sizes button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.sizes button .rec{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);font:700 9px var(--font-body);letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;white-space:nowrap}
+.rec-line{font-size:13px;color:var(--muted)}
+.rec-line b{color:var(--accent)}
+.tbl-wrap{overflow-x:auto}
+table.fit{width:100%;border-collapse:collapse;font-size:13px}
+table.fit th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:0 6px 6px 0;border-bottom:1px solid var(--line)}
+table.fit td{padding:8px 6px 8px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+table.fit td.n{font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.fit th.n{text-align:left}
+table.fit tr.na td{color:var(--muted)}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.compat{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.ring{position:relative;width:72px;height:72px}
+.ring svg{width:72px;height:72px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-display);font-size:24px;font-weight:600}
+.verdict{font-family:var(--font-display);font-size:20px;font-weight:600;line-height:1.15}
+.compat .btline{font-size:12px;color:var(--muted);margin-top:2px}
+.reasons{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px;font-size:13px}
+.reasons li{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:baseline}
+.reasons .d{font-family:var(--font-mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.add{margin-top:18px;width:100%;border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:15px;padding:14px;border-radius:10px;cursor:pointer;display:flex;justify-content:center;gap:10px}
+.add:hover{filter:brightness(1.07)}
+.added{font-size:13px;color:var(--ideal);text-align:center;margin:8px 0 0;min-height:1.2em;font-weight:600}
+
+/* Catalog */
+.catalog{margin-top:48px}
+.cat-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px;margin-bottom:16px}
+.cat-head h2{font-family:var(--font-display);font-weight:500;font-size:clamp(28px,3.5vw,40px);margin:0;line-height:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:0;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--muted)}
+.card.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card .thumb{background:radial-gradient(100% 80% at 50% 25%,var(--stage-a),var(--stage-b));aspect-ratio:4/5;max-width:100%;display:grid;place-items:center;padding:10px}
+.card .thumb svg{width:100%;height:100%}
+.card .info{padding:12px 14px 14px;display:grid;gap:4px}
+.card .nm{font-weight:700}
+.card .pr{font-family:var(--font-mono);font-size:14px;color:var(--muted)}
+.card .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;margin-top:4px}
+.card .meta .sz{color:var(--muted)}
+.card .meta .sz b{color:var(--ink);font-family:var(--font-mono)}
+
+/* Bag drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,10,15,.45);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:var(--surface);z-index:41;border-left:1px solid var(--line);display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 18px) 18px calc(env(safe-area-inset-bottom,0px) + 18px)}
+.drawer header{display:flex;justify-content:space-between;align-items:center}
+.drawer h2{font-family:var(--font-display);font-weight:500;font-size:28px;margin:0}
+.x{border:1px solid var(--line);background:transparent;border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:18px}
+.items{flex:1;overflow:auto;display:grid;align-content:start;gap:12px;margin-top:16px}
+.item{display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px}
+.item .sw{width:54px;height:54px;border-radius:10px;border:1px solid var(--line)}
+.item .t{font-weight:600;font-size:14px}
+.item .s{font-size:12px;color:var(--muted)}
+.item .p{font-family:var(--font-mono);font-size:13px;text-align:right}
+.item .rm{display:block;margin-top:4px;margin-left:auto}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:16px;padding:14px 0;border-top:1px solid var(--line)}
+.total span:last-child{font-family:var(--font-mono)}
+.demo{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 0;min-height:1.2em}
+
+@media (max-width:1180px){
+  .room{grid-template-columns:minmax(0,1fr) 360px;grid-template-areas:"stage detail" "meas detail"}
+  .meas .fields{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));column-gap:24px}
+}
+@media (max-width:820px){
+  .room{grid-template-columns:minmax(0,1fr);grid-template-areas:"stage" "detail" "meas"}
+  .nav a{display:none}
+  #figure{max-height:none;min-height:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Ateliê <i>Prova</i></div>
+    <nav class="nav">
+      <a href="#provador">Provador</a>
+      <a href="#colecao">Coleção</a>
+      <button class="bag-btn" id="bagBtn" type="button">Sacola <span class="n" id="bagN">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro" id="provador">
+    <h1>Provador <em>sob medida</em></h1>
+    <p>Informe suas medidas, escolha a peça e o tamanho. O manequim veste a roupa e mostra onde aperta, onde sobra e se o corte combina com o seu corpo.</p>
+  </section>
+
+  <div class="room">
+    <aside class="panel meas" aria-labelledby="measTitle">
+      <div class="eyebrow">Passo 1</div>
+      <h2 id="measTitle">Suas medidas</h2>
+      <div class="fields" id="fields"></div>
+      <div class="example-note"><span id="exampleNote">Medidas de exemplo. Troque pelas suas.</span><button class="linkbtn" id="resetBtn" type="button">Restaurar</button></div>
+      <details class="howto">
+        <summary>Como tirar as medidas</summary>
+        <ul>
+          <li>Use fita métrica flexível, sem apertar e sem deixar folga.</li>
+          <li>Meça de roupa íntima, em pé, com os pés juntos.</li>
+          <li>Mantenha a fita paralela ao chão em busto, cintura e quadril.</li>
+          <li>Na dúvida entre dois valores, use o maior.</li>
+        </ul>
+      </details>
+      <div class="sub">
+        <h3>Tom de pele</h3>
+        <div class="skins" id="skins" role="group" aria-label="Tom de pele do manequim"></div>
+      </div>
+      <div class="sub">
+        <h3>Subtom</h3>
+        <div class="seg" id="subtom" role="group" aria-label="Subtom da pele">
+          <button type="button" data-v="quente">Quente</button>
+          <button type="button" data-v="neutro">Neutro</button>
+          <button type="button" data-v="frio">Frio</button>
+        </div>
+        <p class="hint">Veias esverdeadas e joias douradas favorecem: quente. Veias azuladas e prata: frio. Os dois: neutro.</p>
+      </div>
+      <div class="bodytype" id="bodytype"></div>
+    </aside>
+
+    <section class="panel stage" aria-label="Manequim com a peça">
+      <div class="stage-head">
+        <div class="eyebrow">Passo 2 · Prova no manequim</div>
+        <div class="toggles">
+          <label class="tg"><input type="checkbox" id="tgHeat" checked> Mapa de ajuste</label>
+          <label class="tg"><input type="checkbox" id="tgOutline" checked> Contorno do corpo</label>
+        </div>
+      </div>
+      <svg id="figure" viewBox="0 0 440 540" role="img" aria-label="Manequim vestindo a peça selecionada"></svg>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <aside class="panel detail" id="detail" aria-live="polite"></aside>
+  </div>
+
+  <section class="catalog" id="colecao">
+    <div class="cat-head">
+      <div>
+        <div class="eyebrow">Coleção outono</div>
+        <h2>Cada peça já provada em você</h2>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Sacola">
+  <header><h2>Sacola</h2><button class="x" id="closeBag" type="button" aria-label="Fechar sacola">×</button></header>
+  <div class="items" id="items"></div>
+  <div class="total"><span>Total</span><span id="total">R$ 0,00</span></div>
+  <button class="add" id="checkout" type="button">Finalizar pedido</button>
+  <p class="demo" id="demoMsg"></p>
+</aside>
+
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs id="gdefs">
+  <filter id="bshadow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2.4"/></filter>
+  <linearGradient id="cyl" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".16" stop-color="#000" stop-opacity=".1"/><stop offset=".4" stop-color="#fff" stop-opacity=".18"/><stop offset=".56" stop-color="#fff" stop-opacity=".05"/><stop offset=".82" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></linearGradient>
+  <linearGradient id="cylG" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".32"/><stop offset=".15" stop-color="#000" stop-opacity=".08"/><stop offset=".38" stop-color="#fff" stop-opacity=".15"/><stop offset=".54" stop-color="#fff" stop-opacity=".04"/><stop offset=".8" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient>
+  <radialGradient id="hl"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <radialGradient id="glow"><stop offset="0" style="stop-color:var(--glow);stop-opacity:.7"/><stop offset="1" style="stop-color:var(--glow);stop-opacity:0"/></radialGradient>
+  <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9B6A45"/><stop offset="1" stop-color="#5E3B26"/></linearGradient>
+  <radialGradient id="woodTop" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#C0905F"/><stop offset="1" stop-color="#875737"/></radialGradient>
+  <radialGradient id="brass" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#F6DE9A"/><stop offset=".6" stop-color="#C9A048"/><stop offset="1" stop-color="#8A6A26"/></radialGradient>
+  <pattern id="wp" patternUnits="userSpaceOnUse" width="28" height="28"><rect width="28" height="28" style="fill:var(--wall-a)"/><rect width="2" height="28" style="fill:var(--wall-b)"/><path d="M15 9.5L18 14L15 18.5L12 14Z" style="fill:var(--wall-b)"/></pattern>
+</defs></svg>
+<script>
+/* ---------- Dados ---------- */
+const SIZES=['36','38','40','42','44','46'];
+const SKINS=['#F2D6C6','#E2B597','#C68E68','#9A6343','#5E3A26'];
+const DEFAULT_M={altura:165,busto:94,cintura:76,quadril:104,ombros:38,coxa:60,entrepernas:76,pele:1,subtom:'quente'};
+const MFIELDS=[
+  {k:'altura',label:'Altura',min:140,max:195,hint:'Descalça, encostada na parede'},
+  {k:'busto',label:'Busto',min:70,max:140,hint:'Na parte mais cheia'},
+  {k:'cintura',label:'Cintura',min:55,max:130,hint:'Na parte mais fina do tronco'},
+  {k:'quadril',label:'Quadril',min:80,max:150,hint:'Na parte mais larga'},
+  {k:'ombros',label:'Ombros',min:32,max:50,hint:'De ponta a ponta, pelas costas'},
+  {k:'coxa',label:'Coxa',min:40,max:85,hint:'Logo abaixo do quadril'},
+  {k:'entrepernas',label:'Entrepernas',min:60,max:95,hint:'Da virilha ao chão'}
+];
+const ZONES={vestido:['ombro','busto','cintura','quadril'],blusa:['ombro','busto','cintura','quadril'],blazer:['ombro','busto','cintura','quadril'],calca:['cintura','quadril','coxa'],saia:['cintura','quadril']};
+const ZONE_LABEL={ombro:'Ombros',busto:'Busto',cintura:'Cintura',quadril:'Quadril',coxa:'Coxa'};
+const CAT_LABEL={vestido:'Vestido',blusa:'Blusa',blazer:'Blazer',calca:'Calça',saia:'Saia'};
+const RANGES={
+  justo:{ombro:[-1,1],busto:[-1,4],cintura:[-1,4],quadril:[-1,4],coxa:[-1,4]},
+  regular:{ombro:[-.5,2],busto:[3,10],cintura:[3,12],quadril:[3,12],coxa:[3,10]},
+  amplo:{ombro:[2,9],busto:[10,28],cintura:[10,34],quadril:[8,30],coxa:[8,30]}
+};
+const STATUS={
+  apertado:{label:'Apertado',v:'--tight',rank:4},
+  sobrando:{label:'Sobrando',v:'--excess',rank:3},
+  justo:{label:'Justinho',v:'--snug',rank:2},
+  folgado:{label:'Folgado',v:'--loose',rank:1},
+  ideal:{label:'Ideal',v:'--ideal',rank:0}
+};
+const PRODUCTS=[
+  {id:'lina',name:'Vestido Envelope Lina',cat:'vestido',price:289.9,fabric:'Viscose com elastano',fit:'regular',stretch:.06,
+   tags:['transpassado','cintura-marcada','decote-v'],ease:{ombro:0,busto:6,cintura:4,quadril:12},ranges:{quadril:[3,30]},
+   length:{base:96,step:1},neck:'v',sleeve:{len:11,extra:2,flare:1.14},flare:.1,tex:'silk',hem:'ondas',waves:{n:6,amp:1.2},
+   colors:[{n:'Terracota',h:'#B5532F',t:'quente'},{n:'Azul-marinho',h:'#1F2D4D',t:'neutro'},{n:'Esmeralda',h:'#0F6B54',t:'frio'}],
+   desc:'Transpassado com faixa na cintura e saia levemente evasê, que cai abaixo do joelho.'},
+  {id:'clara',name:'Vestido Tubinho Clara',cat:'vestido',price:249.9,fabric:'Malha crepe com elastano',fit:'justo',stretch:.08,
+   tags:['tubinho'],ease:{ombro:-.5,busto:1,cintura:2,quadril:1},length:{base:90,step:1},neck:'redondo',sleeve:null,flare:-.04,tex:'crepe',hem:'reta',
+   colors:[{n:'Preto',h:'#1B1A1E',t:'neutro'},{n:'Vinho',h:'#6B1E33',t:'frio'},{n:'Caramelo',h:'#A8682F',t:'quente'}],
+   desc:'Justo ao corpo, sem mangas e com recortes princesa que seguem a silhueta.'},
+  {id:'alma',name:'Blusa Alma de Seda',cat:'blusa',price:179.9,fabric:'Seda pura',fit:'regular',stretch:0,
+   tags:['decote-v'],ease:{ombro:.5,busto:9,cintura:14,quadril:14},length:{base:62,step:1},neck:'v',sleeve:{len:16,extra:4,flare:1.18,puff:1.12},tex:'silk',hem:'curva',
+   colors:[{n:'Off-white',h:'#EEE6D8',t:'neutro'},{n:'Rosa-chá',h:'#D7A496',t:'quente'},{n:'Azul-gelo',h:'#B6CBE0',t:'frio'}],
+   desc:'Decote em V, manga curta e caimento fluido. Seda sem elasticidade.'},
+  {id:'teo',name:'Camisa Ampla Téo',cat:'blusa',price:199.9,fabric:'Tricoline de algodão',fit:'amplo',stretch:0,
+   tags:['oversized','reta'],ease:{ombro:6,busto:24,cintura:30,quadril:24},length:{base:74,step:1},neck:'gola',sleeve:{len:52,extra:5,cuff:true},tex:'cotton',hem:'curva',
+   colors:[{n:'Branco',h:'#F3F3F0',t:'neutro'},{n:'Azul-céu',h:'#8DB3D9',t:'frio'},{n:'Mostarda',h:'#C99A2E',t:'quente'}],
+   desc:'Modelagem ampla com ombro caído, para usar solta ou com a frente para dentro.'},
+  {id:'vera',name:'Blazer Vera Alfaiataria',cat:'blazer',price:419.9,fabric:'Lã fria com elastano',fit:'regular',stretch:.02,
+   tags:['ombro-estruturado','decote-v'],ease:{ombro:1,busto:8,cintura:8,quadril:8},length:{base:70,step:1},neck:'lapela',sleeve:{len:58,extra:2.5,cuff:true,btn:3},tex:'wool',hem:'reta',
+   colors:[{n:'Preto',h:'#1B1A1E',t:'neutro'},{n:'Camelo',h:'#B88A5A',t:'quente'},{n:'Cinza-chumbo',h:'#4A4E57',t:'frio'}],
+   desc:'Ombros estruturados, lapela entalhada e dois botões. Cobre o quadril.'},
+  {id:'nina',name:'Calça Pantalona Nina',cat:'calca',price:259.9,fabric:'Alfaiataria leve',fit:'regular',stretch:.03,
+   tags:['pantalona','cintura-alta'],ease:{cintura:1,quadril:6,coxa:16},ranges:{cintura:[-1,3],quadril:[3,12],coxa:[6,40]},
+   inseam:{base:80,step:.5},rise:'alta',cut:'larga',tex:'wool',
+   colors:[{n:'Off-white',h:'#ECE4D6',t:'neutro'},{n:'Preto',h:'#1B1A1E',t:'neutro'},{n:'Verde-oliva',h:'#5E6B3A',t:'quente'}],
+   desc:'Cintura alta e pernas amplas. Barra longa, pensada para usar com salto.'},
+  {id:'duna',name:'Calça Skinny Duna',cat:'calca',price:219.9,fabric:'Jeans com elastano',fit:'justo',stretch:.14,
+   tags:['skinny'],ease:{cintura:-1,quadril:-3,coxa:-4},ranges:{cintura:[-2,2],quadril:[-4,2],coxa:[-5,2]},
+   inseam:{base:73,step:.5},rise:'media',cut:'skinny',tex:'denim',
+   colors:[{n:'Jeans escuro',h:'#2B3A55',t:'neutro'},{n:'Preto',h:'#1B1A1E',t:'neutro'},{n:'Jeans claro',h:'#7F9CC0',t:'frio'}],
+   desc:'Cintura média e muito elastano: o jeans abraça o corpo e cede até 14%.'},
+  {id:'iris',name:'Saia Midi Íris',cat:'saia',price:229.9,fabric:'Crepe fluido',fit:'regular',stretch:.02,
+   tags:['evase','cintura-marcada'],ease:{cintura:1,quadril:22},ranges:{cintura:[-1,3],quadril:[4,60]},
+   length:{base:72,step:.5},flare:.38,tex:'crepe',hem:'ondas',waves:{n:8,amp:2.4},
+   colors:[{n:'Rosa-antigo',h:'#B57C88',t:'frio'},{n:'Ferrugem',h:'#9C4A23',t:'quente'},{n:'Preto',h:'#1B1A1E',t:'neutro'}],
+   desc:'Godê com cós alto. Gira bem e passa leve pelo quadril.'}
+];
+const BT={
+  ampulheta:{name:'Ampulheta',desc:'Busto e quadril equilibrados, com cintura bem marcada.'},
+  pera:{name:'Triângulo (pera)',desc:'Quadril mais largo que o busto e cintura definida.'},
+  'triangulo-invertido':{name:'Triângulo invertido',desc:'Busto e ombros mais largos que o quadril.'},
+  retangulo:{name:'Retângulo',desc:'Busto, cintura e quadril com medidas próximas.'},
+  oval:{name:'Oval',desc:'Volume concentrado na região da cintura.'}
+};
+const BT_RULES={
+  ampulheta:[
+    {tag:'cintura-marcada',d:10,t:'Marca a cintura e valoriza a proporção ampulheta'},
+    {tag:'transpassado',d:5,t:'O transpassado acompanha suas curvas'},
+    {tag:'tubinho',d:6,t:'A silhueta justa segue suas curvas equilibradas'},
+    {tag:'oversized',d:-8,t:'O volume solto esconde a cintura, seu ponto mais marcado'},
+    {tag:'reta',d:-3,t:'Corte reto não acompanha a cintura'}],
+  pera:[
+    {tag:'ombro-estruturado',d:8,t:'Ombros estruturados equilibram o quadril mais largo'},
+    {tag:'decote-v',d:5,t:'O decote em V leva o olhar para cima'},
+    {tag:'evase',d:7,t:'O evasê passa suave pelo quadril'},
+    {tag:'pantalona',d:6,t:'A pantalona equilibra quadril e pernas'},
+    {tag:'cintura-marcada',d:3,t:'Valoriza a cintura definida'},
+    {tag:'skinny',d:-5,t:'Skinny destaca o quadril; use uma peça mais longa em cima'},
+    {tag:'tubinho',d:-5,t:'O tubinho evidencia a diferença entre busto e quadril'}],
+  'triangulo-invertido':[
+    {tag:'ombro-estruturado',d:-8,t:'Ombreiras alargam ainda mais os ombros'},
+    {tag:'evase',d:8,t:'Volume embaixo equilibra os ombros'},
+    {tag:'pantalona',d:8,t:'Pernas amplas equilibram a parte de cima'},
+    {tag:'decote-v',d:5,t:'O V quebra a linha horizontal dos ombros'},
+    {tag:'oversized',d:-3,t:'Volume em cima pesa a silhueta'}],
+  retangulo:[
+    {tag:'cintura-marcada',d:7,t:'Cria curva na cintura'},
+    {tag:'transpassado',d:6,t:'O transpassado desenha cintura'},
+    {tag:'evase',d:5,t:'O evasê cria volume no quadril'},
+    {tag:'oversized',d:5,t:'Silhueta reta favorece cortes amplos'},
+    {tag:'tubinho',d:-3,t:'O tubinho reforça a linha reta'}],
+  oval:[
+    {tag:'decote-v',d:7,t:'O decote em V alonga o tronco'},
+    {tag:'ombro-estruturado',d:6,t:'Estrutura nos ombros dá linha à silhueta'},
+    {tag:'transpassado',d:4,t:'O transpassado disfarça a região central'},
+    {tag:'reta',d:4,t:'Corte reto cai sem marcar a barriga'},
+    {tag:'cintura-marcada',d:-6,t:'Marcar a cintura chama atenção para a região central'},
+    {tag:'tubinho',d:-7,t:'O tubinho marca a barriga'}]
+};
+
+/* ---------- Utilidades ---------- */
+const S=2.6, FLOOR=528, CX=168;
+const FACT={busto:2.9,cintura:3.0,quadril:2.95,coxa:3.1};
+const $=s=>document.querySelector(s);
+const f=n=>Math.round(n*10)/10;
+const pt=p=>`${f(p[0])} ${f(p[1])}`;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const mir=p=>[2*CX-p[0],p[1]];
+const fmt=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1});
+const signed=n=>(n>0.04?'+':n<-0.04?'−':'')+fmt(Math.abs(n));
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const sv=st=>`var(${STATUS[st].v})`;
+const joinPt=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' e '+a[a.length-1];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function shade(hex,amt){
+  const c=hex.replace('#','');let r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
+  const t=amt<0?0:255,p=Math.abs(amt);
+  return '#'+[r,g,b].map(v=>Math.round((t-v)*p+v).toString(16).padStart(2,'0')).join('');
+}
+function lum(hex){const c=hex.replace('#','');return (parseInt(c.slice(0,2),16)*.299+parseInt(c.slice(2,4),16)*.587+parseInt(c.slice(4,6),16)*.114)/255}
+function cr(pts){
+  let d='';
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+    d+=`C${f(p1[0]+(p2[0]-p0[0])/6)} ${f(p1[1]+(p2[1]-p0[1])/6)} ${f(p2[0]-(p3[0]-p1[0])/6)} ${f(p2[1]-(p3[1]-p1[1])/6)} ${pt(p2)}`;
+  }
+  return d;
+}
+function interp(prof,y){ // prof: [[x,y]...] crescente em y
+  if(y<=prof[0][1])return prof[0][0];
+  for(let i=1;i<prof.length;i++){if(y<=prof[i][1]){const a=prof[i-1],b=prof[i];return lerp(a[0],b[0],(y-a[1])/(b[1]-a[1]||1))}}
+  return prof[prof.length-1][0];
+}
+
+/* ---------- Corpo (busto de costureira) ---------- */
+function buildBody(m){
+  const H=m.altura, top=FLOOR-H*S, y=k=>top+k*H*S;
+  const L={top,chin:y(.12),neck:y(.152),shoulder:y(.182),bust:y(.272),waist:y(.385),hip:y(.495),knee:y(.715),calf:y(.80),ankle:y(.955)};
+  L.crotch=Math.min(Math.max(FLOOR-m.entrepernas*S,L.hip+4*S),L.knee-18*S);
+  const W={neck:5.6*S,shoulder:m.ombros/2*S,bust:m.busto/FACT.busto/2*S,waist:m.cintura/FACT.cintura/2*S,hip:m.quadril/FACT.quadril/2*S};
+  const thighW=m.coxa/FACT.coxa*S,kneeW=m.coxa*.58/3.14*S,calfW=m.coxa*.62/3.14*S,ankleW=6.4*S;
+  const o0=W.hip*.97,i0=Math.max(.6*S,o0-thighW),c0=(o0+i0)/2,w0=o0-i0;
+  const kneeC=Math.max(W.hip*.44,kneeW/2+.8*S),calfC=Math.max(W.hip*.41,calfW/2+.8*S),ankC=Math.max(W.hip*.38,ankleW/2+1.2*S);
+  const yT=L.crotch+(L.knee-L.crotch)*.32;
+  const legs=[
+    {y:L.crotch,c:c0,w:w0},
+    {y:yT,c:lerp(c0,kneeC,.35),w:Math.max(Math.min(thighW*.9,o0*1.05),lerp(w0,kneeW,.35))},
+    {y:L.knee,c:kneeC,w:kneeW},
+    {y:L.calf,c:calfC,w:calfW},
+    {y:L.ankle,c:ankC,w:ankleW},
+    {y:FLOOR-2*S,c:ankC,w:ankleW*1.04}
+  ];
+  legs.forEach(l=>{l.c=Math.max(l.c,l.w/2+.6*S)});
+  const outerProf=[[W.neck,L.neck],[W.shoulder,L.shoulder],[W.bust*1.03,L.bust-5*S],[W.bust,L.bust],[W.waist,L.waist],[W.hip,L.hip],...legs.map(l=>[l.c+l.w/2,l.y])];
+  const outer=yy=>interp(outerProf,yy);
+  const legAt=yy=>{
+    if(yy<=legs[0].y)return {c:legs[0].c,w:legs[0].w};
+    for(let i=1;i<legs.length;i++){if(yy<=legs[i].y){const a=legs[i-1],b=legs[i],t=(yy-a.y)/(b.y-a.y);return {c:lerp(a.c,b.c,t),w:lerp(a.w,b.w,t)}}}
+    const l=legs[legs.length-1];return {c:l.c,w:l.w};
+  };
+  // braços acolchoados de alfaiataria
+  const upW=m.busto*.1*S,foW=6.4*S;
+  const sj=[CX+W.shoulder-3.4*S,L.shoulder+5*S];
+  const el=[CX+Math.max(W.waist+upW/2+4*S,W.bust+upW/2+1.5*S,W.shoulder+.5*S),L.waist+1*S];
+  const wr=[CX+Math.max(W.hip+foW/2+3.2*S,el[0]-CX+1*S),L.crotch+2*S];
+  // contorno do torso: decote, trapézio, ombro arredondado, cava, busto, cintura, quadril
+  const R=[[CX+W.neck,L.neck-1*S],[CX+W.neck+2.8*S,L.neck+.7*S],[CX+W.shoulder-1.8*S,L.shoulder+.5*S],[CX+W.shoulder,L.shoulder+2.8*S],[CX+W.bust*1.04,L.bust-5*S],[CX+W.bust,L.bust],[CX+W.waist,L.waist],[CX+W.hip,L.hip],[CX+o0,L.crotch]];
+  const torso=`M${pt(R[0])}${cr(R)}L${pt(mir(R[R.length-1]))}${cr([...R].reverse().map(mir))}Z`;
+  const legPath=side=>{
+    const O=legs.map(l=>[CX+side*(l.c+l.w/2),l.y]),I=legs.map(l=>[CX+side*(l.c-l.w/2),l.y]).reverse();
+    return `M${pt(O[0])}${cr(O)}L${pt(I[0])}${cr(I)}Z`;
+  };
+  const outline=side=>{
+    const sx=p=>[CX+side*(p[0]-CX),p[1]];
+    const O=[...R.slice(3).map(sx),...legs.slice(1).map(l=>[CX+side*(l.c+l.w/2),l.y])];
+    const I=legs.map(l=>[CX+side*(l.c-l.w/2),l.y]);
+    return `M${pt(O[0])}${cr(O)}M${pt(I[0])}${cr(I)}`;
+  };
+  return {L,W,legs,legAt,outer,arms:{sj,el,wr,upW,foW},paths:{torso,legR:legPath(1),legL:legPath(-1),outline:outline(1)+outline(-1)}};
+}
+// forma de braço/manga ao longo do eixo ombro→cotovelo→punho (lado direito; o esquerdo é espelhado)
+function armPath(A,len,wU,wF,flare,puff){
+  const d1=Math.hypot(A.el[0]-A.sj[0],A.el[1]-A.sj[1]),d2=Math.hypot(A.wr[0]-A.el[0],A.wr[1]-A.el[1]);
+  const P=(a,b,k)=>[lerp(a[0],b[0],k),lerp(a[1],b[1],k)];
+  let pts,ws;
+  if(len<=d1){const e=P(A.sj,A.el,len/d1);pts=[A.sj,P(A.sj,e,.5),e];ws=[wU,wU*(1+(flare-1)*.35),wU*flare]}
+  else{const k=Math.min(1,(len-d1)/d2),e=P(A.el,A.wr,k),wE=lerp(wU,wF,.45);pts=[A.sj,A.el,e];ws=[wU,wE,lerp(wE,wF,k)*flare]}
+  const n=pts.map((p,i)=>{const a=pts[Math.max(0,i-1)],b=pts[Math.min(pts.length-1,i+1)],dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1;return [dy/l,-dx/l]});
+  const O=pts.map((p,i)=>[p[0]+n[i][0]*ws[i]/2,p[1]+n[i][1]*ws[i]/2]),I=pts.map((p,i)=>[p[0]-n[i][0]*ws[i]/2,p[1]-n[i][1]*ws[i]/2]);
+  const r=ws[0]/2*(puff||1),last=pts.length-1;
+  const d=`M${pt(I[0])}A${f(r)} ${f(r)} 0 ${(puff||1)>1?1:0} 1 ${pt(O[0])}${cr(O)}L${pt(I[last])}${cr([...I].reverse())}Z`;
+  return {d,O,I,pts,ws,end:pts[last],nrm:n[last],dir:[-n[last][1],n[last][0]],long:len>d1};
+}
+
+function bodyType(m){
+  const b=m.busto,w=m.cintura,h=m.quadril,mx=Math.max(b,h),mn=Math.min(b,h);
+  let key;
+  if(w/h>=.86&&w/b>=.9)key='oval';
+  else if(Math.abs(b-h)<=mx*.05&&(mn-w)>=mn*.2)key='ampulheta';
+  else if(h-b>h*.05)key='pera';
+  else if(b-h>b*.05)key='triangulo-invertido';
+  else key='retangulo';
+  return {key,...BT[key],whr:w/h};
+}
+
+/* ---------- Caimento ---------- */
+function sizeBody(i){return {busto:84+4*i,cintura:66+4*i,quadril:92+4*i,ombro:36+i,coxa:53+2.5*i}}
+function bodyVal(m,z,p){if(z==='ombro')return m.ombros;if(z==='cintura'&&p.rise==='media')return lerp(m.cintura,m.quadril,.3);return m[z]}
+function garmentVal(p,i,z){const sb=sizeBody(i);const base=(z==='cintura'&&p.rise==='media')?lerp(sb.cintura,sb.quadril,.3):sb[z];return base+(p.ease[z]||0)}
+function classify(e,lo,hi,allow){
+  if(e<lo-allow-.01)return 'apertado';
+  if(e<lo)return 'justo';
+  if(e<=hi)return 'ideal';
+  if(e<=hi+Math.max(4,(hi-lo)*.5))return 'folgado';
+  return 'sobrando';
+}
+function hemDress(y,L){
+  if(y<L.waist+2*S)return ['Cropped, acima da cintura','cropped'];
+  if(y<L.hip-4*S)return ['Entre a cintura e o quadril','curto'];
+  if(y<L.crotch+5*S)return ['Cobre o quadril','quadril'];
+  if(y<L.knee-5*S)return ['No meio da coxa','mini'];
+  if(y<L.knee+4*S)return ['Na altura do joelho','joelho'];
+  if(y<L.calf+3*S)return ['Midi, abaixo do joelho','midi'];
+  if(y<L.ankle-4*S)return ['Midi longo, na canela','midi-longo'];
+  return ['Longo, no tornozelo','longo'];
+}
+function hemInfo(p,i,m,B){
+  if(p.cat==='calca'){
+    const ins=p.inseam.base+i*p.inseam.step,diff=ins-m.entrepernas;
+    let label;
+    if(diff<-9)label='Cropped, bem acima do tornozelo';
+    else if(diff<-4)label='No tornozelo';
+    else if(diff<=-1)label='Na medida para sapato baixo';
+    else if(diff<=3)label='Toca o chão, ideal com salto baixo';
+    else label=`Longa: use salto alto ou faça barra de ${fmt(diff)} cm`;
+    const y=FLOOR-(m.entrepernas-ins)*S;
+    return {y:Math.min(y,FLOOR-.4*S),pool:y>FLOOR,label,cat:'calca',diff,len:ins};
+  }
+  const len=p.length.base+i*p.length.step;
+  const y=Math.min((p.cat==='saia'?B.L.waist:B.L.neck)+len*S,FLOOR-1*S);
+  const [label,cat]=hemDress(y,B.L);
+  return {y,label,cat,len};
+}
+function analyze(p,i,m,B){
+  const hem=hemInfo(p,i,m,B);
+  const zones=ZONES[p.cat].map(z=>{
+    const body=bodyVal(m,z,p),g=garmentVal(p,i,z),e=g-body;
+    const [lo,hi]=(p.ranges&&p.ranges[z])||RANGES[p.fit][z];
+    const allow=z==='ombro'?.6:body*p.stretch;
+    const applies=!(z==='quadril'&&(p.cat==='blusa'||p.cat==='blazer')&&hem.y<B.L.hip-1*S);
+    return {z,body,g,e,lo,hi,allow,status:classify(e,lo,hi,allow),applies};
+  });
+  return {zones,hem};
+}
+function sizePenalty(p,i,m,B){
+  return analyze(p,i,m,B).zones.filter(z=>z.applies).reduce((s,z)=>{
+    if(z.e<z.lo)s+=(z.lo-z.e)*(z.e<z.lo-z.allow?4:1.2);
+    if(z.e>z.hi)s+=(z.e-z.hi);
+    return s;
+  },0);
+}
+function recommend(p,m,B){
+  let best=0,bp=Infinity;
+  SIZES.forEach((_,i)=>{const v=sizePenalty(p,i,m,B);if(v<bp-.001){bp=v;best=i}});
+  return best;
+}
+function worst(an){return an.zones.filter(z=>z.applies).reduce((w,z)=>STATUS[z.status].rank>STATUS[w].rank?z.status:w,'ideal')}
+function bestColor(p,m){const i=p.colors.findIndex(c=>c.t===m.subtom);return i<0?0:i}
+
+function compat(p,an,m,ci){
+  const bt=bodyType(m),tags=new Set(p.tags),reasons=[];let s=70;
+  const add=(d,t)=>{s+=d;reasons.push({d,t})};
+  (BT_RULES[bt.key]||[]).forEach(r=>{if(tags.has(r.tag))add(r.d,r.t)});
+  const app=an.zones.filter(z=>z.applies);
+  const by=st=>app.filter(z=>z.status===st).map(z=>ZONE_LABEL[z.z].toLowerCase());
+  const ap=by('apertado'),so=by('sobrando'),fo=by('folgado'),ju=by('justo');
+  if(ap.length)add(-12*ap.length,`Apertado em ${joinPt(ap)} neste tamanho`);
+  if(so.length)add(-8*so.length,`Sobra tecido em ${joinPt(so)}`);
+  if(fo.length)add(-3*fo.length,`Um pouco folgado em ${joinPt(fo)}`);
+  if(ju.length)add(-2*ju.length,`Justinho em ${joinPt(ju)}, mas o tecido cede`);
+  if(!ap.length&&!so.length&&!fo.length&&!ju.length)add(6,'Caimento ideal em todas as medidas');
+  const cat=an.hem.cat;
+  if(p.cat!=='calca'){
+    if(m.altura<158&&cat==='midi-longo')add(-5,'Na canela, o comprimento encurta quem tem menos de 1,58 m');
+    else if(m.altura<158&&cat==='midi')add(-2,'Abaixo do joelho encurta um pouco a silhueta');
+    if(m.altura>=174&&(cat==='longo'||cat==='midi-longo'))add(4,'Sua altura sustenta bem comprimentos longos');
+  }else{
+    if(an.hem.diff>3)add(-3,'A barra pede salto alto ou ajuste');
+    if(m.altura>=174&&tags.has('pantalona'))add(4,'Sua altura sustenta bem a pantalona');
+  }
+  if(m.altura<158&&tags.has('cintura-alta'))add(4,'Cintura alta alonga as pernas');
+  const c=p.colors[ci];
+  if(m.subtom==='neutro')add(4,`${c.n} funciona bem com subtom neutro`);
+  else if(c.t==='neutro')add(3,`${c.n} é uma cor neutra, combina com seu subtom`);
+  else if(c.t===m.subtom)add(8,`${c.n} realça seu subtom ${m.subtom}`);
+  else{const alt=p.colors.find(x=>x.t===m.subtom);add(-6,`${c.n} tende a apagar o subtom ${m.subtom}`+(alt?`; experimente ${alt.n}`:''))}
+  s=Math.max(0,Math.min(100,Math.round(s)));
+  reasons.sort((a,b)=>Math.abs(b.d)-Math.abs(a.d));
+  return {score:s,reasons,bt};
+}
+function verdict(s){
+  if(s>=85)return ['Combina muito com você','--ideal'];
+  if(s>=70)return ['Boa escolha','--ideal'];
+  if(s>=55)return ['Funciona com ressalvas','--snug'];
+  return ['Não é a melhor opção','--tight'];
+}
+
+/* ---------- Texturas e pincéis ---------- */
+const TEXOP={silk:.35,crepe:.45,cotton:.5,wool:.5,denim:.85,linen:.6};
+function rng(seed){return ()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function makeTex(kind){
+  const N=128,cv=document.createElement('canvas');cv.width=cv.height=N;
+  const ctx=cv.getContext('2d');if(!ctx)return '';
+  const img=ctx.createImageData(N,N),r=rng(kind.length*977+kind.charCodeAt(0)*31);
+  const G=8,grid=Array.from({length:G*G},()=>r()-.5),gv=(a,b)=>grid[((b%G+G)%G)*G+((a%G+G)%G)];
+  const vn=(x,y)=>{const gx=x/N*G,gy=y/N*G,ix=Math.floor(gx),iy=Math.floor(gy),fx=gx-ix,fy=gy-iy,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);
+    return lerp(lerp(gv(ix,iy),gv(ix+1,iy),sx),lerp(gv(ix,iy+1),gv(ix+1,iy+1),sx),sy)};
+  const row=Array.from({length:N},()=>r()-.5),col=Array.from({length:N},()=>r()-.5);
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+    const n=r()-.5;let v;
+    switch(kind){
+      case 'linen':v=n*.5+(x%4===0?-.32:0)+(y%4===0?-.28:0)+row[y]*.35+col[x]*.2;break;
+      case 'denim':v=((x+y)%4<2?.32:-.32)+n*.35+col[x]*.55;break;
+      case 'wool':v=vn(x,y)*.28+n*.5+((x+y)%6<3?.12:-.12);break;
+      case 'silk':v=row[y]*.4+n*.12;break;
+      case 'cotton':v=((x+y)%2?.18:-.18)+n*.3+row[y]*.15;break;
+      default:v=n*.7; // crepe
+    }
+    const a=Math.min(255,Math.abs(v)*170),i=(y*N+x)*4,c=v>0?255:0;
+    img.data[i]=img.data[i+1]=img.data[i+2]=c;img.data[i+3]=a;
+  }
+  ctx.putImageData(img,0,0);return cv.toDataURL();
+}
+function initDefs(){
+  const T={linen:36,denim:20,wool:40,silk:56,crepe:26,cotton:22};
+  const pats=Object.entries(T).map(([k,s])=>`<pattern id="tx-${k}" patternUnits="userSpaceOnUse" width="${s}" height="${s}"><image href="${makeTex(k)}" width="${s}" height="${s}" preserveAspectRatio="none"/></pattern>`).join('');
+  const hb=Object.keys(STATUS).map(st=>`<linearGradient id="hb-${st}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:${sv(st)};stop-opacity:0"/><stop offset=".5" style="stop-color:${sv(st)};stop-opacity:.9"/><stop offset="1" style="stop-color:${sv(st)};stop-opacity:0"/></linearGradient>`).join('');
+  document.getElementById('gdefs').insertAdjacentHTML('beforeend',pats+hb);
+}
+const q=(a,c,b)=>`M${pt(a)}Q${pt(c)} ${pt(b)}`;
+const line=(d,c,w,op)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}"${op!=null?` stroke-opacity="${op}"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+function soft(d,c,op,w){ // traço com borda esfumada, sem filtro
+  return `<g fill="none" stroke="${c}" stroke-linecap="round" stroke-linejoin="round"><path d="${d}" stroke-width="${f(w*2.8)}" stroke-opacity="${f(op*.3*100)/100}"/><path d="${d}" stroke-width="${f(w*1.6)}" stroke-opacity="${f(op*.45*100)/100}"/><path d="${d}" stroke-width="${f(w*.6)}" stroke-opacity="${f(op*.8*100)/100}"/></g>`;
+}
+function fold(a,b,bend,k){ // vinco escuro + brilho ao lado
+  const cx=(a[0]+b[0])/2+bend,cy=(a[1]+b[1])/2;
+  return soft(`M${pt(a)}Q${f(cx)} ${f(cy)} ${pt(b)}`,'#000',.24*k,1.3)+soft(`M${f(a[0]+1.7)} ${f(a[1])}Q${f(cx+1.9)} ${f(cy)} ${f(b[0]+1.7)} ${f(b[1])}`,'#fff',.2*k,1.1);
+}
+const stitch=(d,c)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width=".6" stroke-dasharray="1.8 1.3" stroke-linecap="round"/>`;
+const dstitch=(d1,d2,c)=>stitch(d1,c)+stitch(d2,c);
+function button(x,y,r,col,dk){
+  return `<circle cx="${f(x)}" cy="${f(y)}" r="${f(r)}" fill="${shade(col,lum(col)>.7?-.12:.1)}" stroke="${dk}" stroke-width=".5"/><circle cx="${f(x-r*.32)}" cy="${f(y-r*.35)}" r="${f(r*.35)}" fill="#fff" opacity=".45"/><circle cx="${f(x-r*.3)}" cy="${f(y+r*.1)}" r="${f(r*.14)}" fill="${dk}"/><circle cx="${f(x+r*.3)}" cy="${f(y+r*.1)}" r="${f(r*.14)}" fill="${dk}"/>`;
+}
+function edgeShade(d){return `<path d="${d}" fill="none" stroke="#000" stroke-opacity=".06" stroke-width="8"/><path d="${d}" fill="none" stroke="#000" stroke-opacity=".08" stroke-width="3.6"/>`}
+function wavePts(xr,xl,y,n,amp,sag){
+  const pts=[],down=[],up=[];
+  for(let i=0;i<=n;i++){
+    const x=lerp(xr,xl,i/n),t=(x-CX)/((xr-xl)/2||1),base=y+sag*(1-t*t);
+    const yy=(i===0||i===n)?y:base+(i%2?amp:-amp*.25);
+    pts.push([x,yy]);if(i>0&&i<n)(i%2?down:up).push([x,yy]);
+  }
+  return {pts,down,up};
+}
+function bow(x,y,col,dk,mid){
+  const piece=d=>`<path d="${d}" fill="${col}" stroke="${dk}" stroke-width=".7" stroke-linejoin="round"/><path d="${d}" fill="url(#cylG)"/>`;
+  let s=piece(`M${f(x-1.2*S)} ${f(y+.6*S)}C${f(x-2.6*S)} ${f(y+8*S)} ${f(x+.8*S)} ${f(y+14*S)} ${f(x-1.2*S)} ${f(y+22*S)}L${f(x+1.8*S)} ${f(y+21*S)}C${f(x+3*S)} ${f(y+14*S)} ${f(x+.4*S)} ${f(y+8*S)} ${f(x+1*S)} ${f(y+.6*S)}Z`);
+  s+=piece(`M${f(x+.4*S)} ${f(y+.6*S)}C${f(x+3*S)} ${f(y+6*S)} ${f(x+5.2*S)} ${f(y+11*S)} ${f(x+4.6*S)} ${f(y+17*S)}L${f(x+7.2*S)} ${f(y+16.4*S)}C${f(x+6.8*S)} ${f(y+10.5*S)} ${f(x+4.2*S)} ${f(y+5.4*S)} ${f(x+2.2*S)} ${f(y+.4*S)}Z`);
+  [[-1,-26],[1,22]].forEach(([sd,ang])=>{
+    const cx=x+sd*3*S,cy=y-.8*S;
+    s+=`<g transform="rotate(${ang} ${f(cx)} ${f(cy)})"><ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(3.6*S)}" ry="${f(2.1*S)}" fill="${col}" stroke="${dk}" stroke-width=".7"/><ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(3.6*S)}" ry="${f(2.1*S)}" fill="url(#cylG)"/><ellipse cx="${f(cx+sd*.7*S)}" cy="${f(cy+.2*S)}" rx="${f(1.7*S)}" ry="${f(.75*S)}" fill="${dk}" opacity=".5"/></g>`;
+  });
+  s+=`<rect x="${f(x-1.5*S)}" y="${f(y-2*S)}" width="${f(3*S)}" height="${f(3.8*S)}" rx="${f(1*S)}" fill="${mid}" stroke="${dk}" stroke-width=".7"/><rect x="${f(x-1.5*S)}" y="${f(y-2*S)}" width="${f(3*S)}" height="${f(3.8*S)}" rx="${f(1*S)}" fill="url(#cylG)"/>`;
+  return s;
+}
+
+/* ---------- Acabamentos por peça ---------- */
+const DECO={
+  lina(c){
+    const {L,wa,bu,sh,hh,nx,ny,hemY,dk,mid,stc,col}=c,kx=CX+wa*.6,ky=L.waist;
+    let sh_='',de='';
+    sh_+=fold([CX+sh*.55,L.shoulder+5*S],[kx-1*S,ky-2.2*S],-3*S,1);
+    sh_+=fold([CX+bu*.1,L.bust-7*S],[kx-2.5*S,ky-2*S],-2*S,.8);
+    sh_+=fold([CX-bu*.8,L.bust-1*S],[kx-5*S,ky-1.6*S],3*S,.7);
+    sh_+=fold([CX-bu*.95,L.bust+4*S],[CX-wa*.1,ky-1.8*S],2*S,.55);
+    if(hemY>L.hip){sh_+=fold([kx,ky+2*S],[CX+hh*.6,hemY],2*S,.8);sh_+=fold([kx-1*S,ky+2*S],[CX+hh*.15,hemY],-2*S,.6)}
+    const a=[2*CX-nx,ny],m=[CX-1*S,L.bust+2*S],b=[CX+wa*.92,L.waist-1*S];
+    de+=soft(q([a[0]-1,a[1]+1.4],[m[0]-1.2,m[1]+1.6],[b[0]-1,b[1]+1.6]),'#000',.35,1.3)+line(q(a,m,b),dk,.8);
+    de+=stitch(q([a[0]+1.2,a[1]-.4],[m[0]+1.4,m[1]-1],[b[0]+.4,b[1]-1.4]),stc);
+    if(hemY>L.hip){
+      const s1=[kx,ky+2*S],s2=[CX+wa*.15,L.hip+8*S],s3=[CX-hh*.28,hemY+1*S];
+      de+=soft(q([s1[0]-1.2,s1[1]],[s2[0]-1.4,s2[1]],[s3[0]-1.4,s3[1]]),'#000',.32,1.3)+line(q(s1,s2,s3),dk,.8)+stitch(q([s1[0]+1.2,s1[1]],[s2[0]+1.2,s2[1]],[s3[0]+1.2,s3[1]]),stc);
+    }
+    const x1=CX-wa-2*S,x2=CX+wa+2*S;
+    de+=`<rect x="${f(x1)}" y="${f(ky-1.8*S)}" width="${f(x2-x1)}" height="${f(3.6*S)}" fill="${mid}"/>`;
+    de+=soft(`M${f(x1)} ${f(ky+2.1*S)}H${f(x2)}`,'#000',.32,1.2)+soft(`M${f(x1)} ${f(ky-1.1*S)}H${f(x2)}`,'#fff',.25,1);
+    de+=dstitch(`M${f(x1)} ${f(ky-1.3*S)}H${f(x2)}`,`M${f(x1)} ${f(ky+1.3*S)}H${f(x2)}`,stc);
+    return {shade:sh_,deco:de,over:bow(kx,ky,col,dk,mid)};
+  },
+  clara(c){
+    const {L,bu,wa,hi,hh,hemY,nx,ny,nb,stc}=c;let de='';
+    [-1,1].forEach(s=>{
+      const P=[[CX+s*bu*.55,L.bust-7*S],[CX+s*bu*.42,L.bust],[CX+s*wa*.42,L.waist],[CX+s*hi*.48,L.hip],[CX+s*hh*.46,hemY+1*S]];
+      const P2=P.map(p=>[p[0]+1.2,p[1]]);
+      de+=soft(`M${pt(P[0])}${cr(P)}`,'#000',.32,1)+soft(`M${pt(P2[0])}${cr(P2)}`,'#fff',.22,.8);
+      de+=soft(`M${f(CX+s*wa*.78)} ${f(L.waist-6*S)}L${f(CX+s*wa*.8)} ${f(L.waist+5*S)}`,'#000',.18,.9);
+    });
+    de+=stitch(`M${f(nx-.3*S)} ${f(ny+1.5*S)}Q${f(nx-.9*S)} ${f(nb+1.5*S)} ${CX} ${f(nb+1.5*S)}Q${f(2*CX-nx+.9*S)} ${f(nb+1.5*S)} ${f(2*CX-nx+.3*S)} ${f(ny+1.5*S)}`,stc);
+    return {deco:de};
+  },
+  alma(c){
+    const {L,bu,hh,hemY,nx,ny,nb,stc,col}=c;let sh='',de='';
+    [-1,1].forEach(s=>{
+      sh+=soft(q([CX+s*bu*.3,L.bust-3*S],[CX+s*bu*.2,L.waist],[CX+s*hh*.3,hemY-2*S]),'#fff',.3,3);
+      sh+=fold([CX+s*bu*.48,L.bust+2*S],[CX+s*hh*.55,hemY],s*2*S,.9);
+      sh+=fold([CX+s*bu*.95,L.bust-2*S],[CX+s*hh*.86,hemY-1*S],-s*1.5*S,.7);
+    });
+    de+=`<path d="M${f(nx)} ${f(ny)}L${CX} ${f(nb)}L${f(2*CX-nx)} ${f(ny)}" fill="none" stroke="${shade(col,.08)}" stroke-width="${f(2.6*S)}" stroke-linejoin="round"/>`;
+    de+=soft(`M${f(nx+.3*S)} ${f(ny+1.6*S)}L${CX} ${f(nb+1.9*S)}L${f(2*CX-nx-.3*S)} ${f(ny+1.6*S)}`,'#000',.2,1);
+    de+=stitch(`M${f(nx+.1*S)} ${f(ny+.9*S)}L${CX} ${f(nb+1.1*S)}L${f(2*CX-nx-.1*S)} ${f(ny+.9*S)}`,stc);
+    return {shade:sh,deco:de};
+  },
+  teo(c){
+    const {L,W,bu,hh,hemY,ny,nb,col,dk,stc}=c;let sh='',de='',ov='';
+    [-1,1].forEach(s=>{
+      sh+=fold([CX+s*bu*.92,L.bust-3*S],[CX+s*hh*.42,hemY],s*3*S,1);
+      sh+=fold([CX+s*bu*.6,L.bust+4*S],[CX+s*hh*.78,hemY],-s*2*S,.8);
+      sh+=fold([CX+s*hh*.95,L.waist+4*S],[CX+s*hh*.9,hemY-1*S],s*1*S,.6);
+    });
+    de+=`<rect x="${f(CX-1.7*S)}" y="${f(nb)}" width="${f(3.4*S)}" height="${f(hemY-nb+8*S)}" fill="${col}"/>`;
+    de+=soft(`M${f(CX-1.9*S)} ${f(nb)}V${f(hemY+8*S)}`,'#000',.25,1.1);
+    de+=dstitch(`M${f(CX-1.3*S)} ${f(nb)}V${f(hemY+8*S)}`,`M${f(CX+1.3*S)} ${f(nb)}V${f(hemY+8*S)}`,stc);
+    for(let y=nb+5*S;y<hemY-3*S;y+=8*S)de+=button(CX,y,.9*S,col,dk);
+    const px=CX+bu*.3,py=L.bust-8*S,pw=9*S,ph=10.5*S;
+    const pd=`M${f(px)} ${f(py)}H${f(px+pw)}V${f(py+ph-1.5*S)}L${f(px+pw/2)} ${f(py+ph)}L${f(px)} ${f(py+ph-1.5*S)}Z`;
+    de+=`<path d="${pd}" fill="#000" opacity=".14" transform="translate(.8 1.3)"/><path d="${pd}" fill="${col}" stroke="${dk}" stroke-width=".6"/><path d="${pd}" fill="url(#cylG)" opacity=".5"/>`;
+    de+=stitch(`M${f(px+.7*S)} ${f(py)}V${f(py+ph-1.9*S)}L${f(px+pw/2)} ${f(py+ph-.8*S)}L${f(px+pw-.7*S)} ${f(py+ph-1.9*S)}V${f(py)}`,stc)+stitch(`M${f(px)} ${f(py+1.4*S)}H${f(px+pw)}`,stc);
+    [1,-1].forEach(s=>{
+      const A=[CX+s*.3*S,nb-.6*S],B=[CX+s*(W.neck+2.6*S),ny-1.4*S],C=[CX+s*(W.neck+5.2*S),L.neck+6.2*S],D=[CX+s*1.8*S,nb+2.2*S];
+      const cd=`M${pt(A)}L${pt(B)}Q${f(B[0]+s*1.4*S)} ${f((B[1]+C[1])/2)} ${pt(C)}L${pt(D)}Z`;
+      ov+=soft(`M${f(C[0])} ${f(C[1]+1.2)}L${f(D[0])} ${f(D[1]+1.2)}`,'#000',.32,1.4);
+      ov+=`<path d="${cd}" fill="${col}" stroke="${dk}" stroke-width=".7" stroke-linejoin="round"/><path d="${cd}" fill="url(#cylG)" opacity=".7"/>`;
+      ov+=stitch(`M${f(B[0]-s*.3*S)} ${f(B[1]+1.3*S)}Q${f(B[0]+s*.5*S)} ${f((B[1]+C[1])/2)} ${f(C[0]-s*1*S)} ${f(C[1]-1*S)}L${f(D[0]+s*.4*S)} ${f(D[1]-1.1*S)}`,stc);
+    });
+    return {shade:sh,deco:de,over:ov};
+  },
+  vera(c){
+    const {L,W,bu,wa,hi,hemY,nx,ny,nb,col,dk,mid,stc}=c;let un='',sh='',de='',ov='';
+    const cam=`M${f(CX-W.neck-1.2*S)} ${f(ny+.4*S)}Q${CX} ${f(L.neck+7*S)} ${f(CX+W.neck+1.2*S)} ${f(ny+.4*S)}L${f(CX+bu*.7)} ${f(L.waist)}H${f(CX-bu*.7)}Z`;
+    un+=`<path d="${cam}" fill="#EEE8DF" stroke="#CFC6B9" stroke-width=".6"/><path d="${cam}" fill="url(#tx-silk)" opacity=".5"/><path d="${cam}" fill="url(#cylG)"/>`;
+    [-1,1].forEach(s=>{
+      sh+=soft(q([CX+s*bu*.5,L.bust+3*S],[CX+s*wa*.45,L.waist],[CX+s*hi*.5,L.hip-4*S]),'#000',.22,1);
+      sh+=fold([CX+s*bu*.98,L.bust-3*S],[CX+s*wa*.82,L.waist+2*S],s*1.5*S,.5);
+      const x1=CX+s*hi*.3,x2=CX+s*hi*.82,y1=L.hip-2.5*S,y2=L.hip+1.2*S;
+      const fd=`M${f(x1)} ${f(y1)}L${f(x2)} ${f(y1-.3*S)}L${f(x2-s*.2*S)} ${f(y2)}L${f(x1)} ${f(y2+.2*S)}Z`;
+      de+=soft(`M${f(x1)} ${f(y2+1)}L${f(x2)} ${f(y2+.8)}`,'#000',.38,1.3);
+      de+=`<path d="${fd}" fill="${mid}" stroke="${dk}" stroke-width=".6"/><path d="${fd}" fill="url(#cylG)" opacity=".5"/>`;
+      de+=stitch(`M${f(x1+s*.6*S)} ${f(y2-.6*S)}L${f(x2-s*.7*S)} ${f(y2-.7*S)}`,stc);
+    });
+    de+=soft(`M${f(CX-.3*S)} ${f(nb)}V${f(hemY+2*S)}`,'#000',.3,1.2)+line(`M${f(CX+.4*S)} ${f(nb)}V${f(hemY+2*S)}`,dk,.8);
+    [L.waist-1*S,L.waist+6.5*S].forEach(y=>de+=button(CX+2.2*S,y,1.15*S,col,dk));
+    de+=`<path d="M${f(CX+bu*.38)} ${f(L.bust-3*S)}L${f(CX+bu*.86)} ${f(L.bust-4.2*S)}L${f(CX+bu*.86)} ${f(L.bust-2.7*S)}L${f(CX+bu*.38)} ${f(L.bust-1.5*S)}Z" fill="${mid}" stroke="${dk}" stroke-width=".5"/>`;
+    [1,-1].forEach(s=>{
+      const a=[CX+s*(nx-CX),ny],n1=[CX+s*bu*.52,L.bust-5.5*S],n2=[CX+s*bu*.68,L.bust-4.6*S],b=[CX+s*bu*.64,L.bust-1.4*S],cc=[CX+s*.9*S,nb-.6*S],qc=[CX+s*bu*.3,L.bust+2*S];
+      const d=`M${pt(a)}L${pt(n1)}L${pt(n2)}L${pt(b)}Q${pt(qc)} ${pt(cc)}Z`;
+      ov+=soft(`M${f(n2[0]+s*.6)} ${f(n2[1]+1)}L${f(b[0]+s*.8)} ${f(b[1]+1)}Q${f(qc[0]+s)} ${f(qc[1]+1.4)} ${f(cc[0])} ${f(cc[1]+1.6)}`,'#000',.38,1.4);
+      ov+=`<path d="${d}" fill="${col}" stroke="${dk}" stroke-width=".7" stroke-linejoin="round"/><path d="${d}" fill="url(#cylG)"/><path d="${d}" fill="url(#tx-wool)" opacity=".5"/>`;
+      ov+=soft(q([a[0]+s*.3*S,a[1]+1.4*S],[CX+s*bu*.22,L.bust-4*S],[cc[0]+s*.4*S,cc[1]-1.4*S]),'#fff',.22,1);
+      ov+=stitch(`M${f(n1[0]-s*.1*S)} ${f(n1[1]+1*S)}L${f(b[0]-s*.6*S)} ${f(b[1])}`,stc);
+    });
+    return {under:un,shade:sh,deco:de,over:ov};
+  },
+  nina(c){
+    const {L,wa,hi,yTop,t,hc,hw,hemY,k,kc,dk,mid,stc,col,an}=c;let sh='',de='';
+    const wbB=yTop+3.6*S;
+    de+=`<rect x="${f(CX-wa-1*S)}" y="${f(yTop)}" width="${f(2*wa+2*S)}" height="${f(3.6*S)}" fill="${mid}"/>`;
+    de+=soft(`M${f(CX-wa)} ${f(wbB+.6)}H${f(CX+wa)}`,'#000',.32,1.2);
+    de+=dstitch(`M${f(CX-wa)} ${f(yTop+.8*S)}H${f(CX+wa)}`,`M${f(CX-wa)} ${f(wbB-.8*S)}H${f(CX+wa)}`,stc);
+    [-1,1].forEach(s=>{
+      [.38,.86].forEach(r=>{const x=CX+s*wa*r;de+=`<rect x="${f(x-.6*S)}" y="${f(yTop-.4*S)}" width="${f(1.2*S)}" height="${f(4.6*S)}" rx=".6" fill="${col}" stroke="${dk}" stroke-width=".4"/>`});
+      sh+=fold([CX+s*wa*.32,wbB],[CX+s*wa*.36,wbB+11*S],s*.8*S,.9);
+      sh+=fold([CX+s*wa*.6,wbB],[CX+s*wa*.62,wbB+8*S],s*.6*S,.6);
+      const cm=[CX+s*(t.c+kc)/2,(L.hip+hemY)/2];
+      sh+=soft(q([CX+s*t.c,L.hip+2*S],cm,[CX+s*hc,hemY-.5*S]),'#fff',.38,1);
+      sh+=soft(q([CX+s*t.c+1.4,L.hip+2*S],[cm[0]+1.4,cm[1]],[CX+s*hc+1.4,hemY-.5*S]),'#000',.2,1);
+      de+=soft(q([CX+s*wa*.7,wbB],[CX+s*wa*.82,L.hip-6*S],[CX+s*hi*.98,L.hip-1.5*S]),'#000',.36,1.1);
+      de+=stitch(q([CX+s*(wa*.7+1.2*S),wbB],[CX+s*(wa*.82+1.2*S),L.hip-6*S],[CX+s*hi*.98,L.hip+.4*S]),stc);
+      if(hemY>k.y){sh+=fold([CX+s*(hc-hw*.15),k.y+4*S],[CX+s*(hc-hw*.22),hemY],s*1.5*S,.7);sh+=fold([CX+s*(hc+hw*.25),k.y+10*S],[CX+s*(hc+hw*.3),hemY],-s*1.2*S,.6)}
+      de+=stitch(`M${f(CX+s*(hc-hw/2+1*S))} ${f(hemY-1.8*S)}L${f(CX+s*(hc+hw/2-1*S))} ${f(hemY-1.8*S)}`,stc);
+      if(an.hem.pool)[-.25,.15].forEach(o=>{sh+=fold([CX+s*(hc+hw*o),hemY-7*S],[CX+s*(hc+hw*o+.8*S),hemY],s*1.6*S,.9)});
+    });
+    de+=stitch(`M${f(CX+1.4*S)} ${f(wbB)}V${f(L.crotch-4*S)}Q${f(CX+1.4*S)} ${f(L.crotch-1*S)} ${f(CX-.2*S)} ${f(L.crotch-1.4*S)}`,stc)+line(`M${CX} ${f(wbB)}V${f(L.crotch-1*S)}`,dk,.6);
+    de+=`<rect x="${f(CX-.8*S)}" y="${f(yTop+1.2*S)}" width="${f(1.6*S)}" height="${f(1.2*S)}" rx=".4" fill="url(#brass)"/>`;
+    return {shade:sh,deco:de};
+  },
+  duna(c){
+    const {L,wa,hi,yTop,t,tw,hc,hw,hemY,k,dk,mid,stc,col,an}=c;let sh='',de='';
+    const wbB=yTop+3.4*S,gold=stc,cu='#B8733A';
+    [-1,1].forEach(s=>{
+      sh+=`<ellipse cx="${f(CX+s*t.c)}" cy="${f(t.y+4*S)}" rx="${f(tw*.3)}" ry="${f(13*S)}" fill="url(#hl)" opacity=".55"/>`;
+      sh+=`<ellipse cx="${f(CX+s*k.c)}" cy="${f(k.y)}" rx="${f(k.w*.32)}" ry="${f(5*S)}" fill="url(#hl)" opacity=".35"/>`;
+      for(let i=0;i<4;i++){const x0=CX+s*(1.6*S+i*1.1*S),y0=L.crotch-5.5*S+i*1.5*S;sh+=soft(q([x0,y0],[x0+s*4*S,y0-1.6*S],[x0+s*9*S,y0-1*S-i*.6*S]),'#fff',.28,1)}
+      if(hemY>k.y+3*S)[0,1].forEach(i=>{const yy=k.y-1.5*S+i*2.6*S;sh+=soft(`M${f(CX+s*(k.c-k.w*.32))} ${f(yy)}Q${f(CX+s*k.c)} ${f(yy+1.2*S)} ${f(CX+s*(k.c+k.w*.32))} ${f(yy)}`,'#fff',.22,1)});
+      [.42,.9].forEach(r=>{const x=CX+s*wa*r;de+=`<rect x="${f(x-.6*S)}" y="${f(yTop-.4*S)}" width="${f(1.2*S)}" height="${f(4.4*S)}" rx=".6" fill="${col}" stroke="${dk}" stroke-width=".4"/>`+stitch(`M${f(x)} ${f(yTop)}V${f(yTop+4*S)}`,gold)});
+      const p0=[CX+s*wa*.52,wbB],pc=[CX+s*wa*.6,L.hip-4.5*S],p1=[CX+s*hi*.98,L.hip-3*S];
+      de+=soft(q(p0,pc,p1),'#000',.36,1.1)+dstitch(q([p0[0]+s*.9*S,p0[1]],[pc[0]+s*.9*S,pc[1]+.6*S],[p1[0],p1[1]+.9*S]),q([p0[0]+s*1.7*S,p0[1]],[pc[0]+s*1.7*S,pc[1]+1.2*S],[p1[0],p1[1]+1.7*S]),gold);
+      de+=`<circle cx="${f(p0[0]+s*.4*S)}" cy="${f(p0[1]+.9*S)}" r="${f(.6*S)}" fill="${cu}"/><circle cx="${f(p1[0]-s*.7*S)}" cy="${f(p1[1]+.5*S)}" r="${f(.6*S)}" fill="${cu}"/>`;
+      de+=dstitch(`M${f(CX+s*(hc-hw/2+.6*S))} ${f(hemY-1.3*S)}L${f(CX+s*(hc+hw/2-.6*S))} ${f(hemY-1.3*S)}`,`M${f(CX+s*(hc-hw/2+.6*S))} ${f(hemY-2.1*S)}L${f(CX+s*(hc+hw/2-.6*S))} ${f(hemY-2.1*S)}`,gold);
+      if(an.hem.diff>-1)[0,1,2].forEach(i=>{const yy=hemY-3.5*S-i*2.4*S;sh+=fold([CX+s*(hc-hw*.45),yy],[CX+s*(hc+hw*.45),yy-.6*S],1.2*S,.7)});
+    });
+    const cpx=CX+wa*.62,cpy=wbB+1*S;
+    de+=dstitch(`M${f(cpx)} ${f(cpy)}V${f(cpy+4*S)}H${f(cpx+4*S)}`,`M${f(cpx+.8*S)} ${f(cpy)}V${f(cpy+3.2*S)}H${f(cpx+4*S)}`,gold);
+    de+=`<rect x="${f(CX-wa-1*S)}" y="${f(yTop)}" width="${f(2*wa+2*S)}" height="${f(3.4*S)}" fill="${mid}"/>`;
+    de+=soft(`M${f(CX-wa)} ${f(wbB+.6)}H${f(CX+wa)}`,'#000',.32,1.2);
+    de+=dstitch(`M${f(CX-wa)} ${f(yTop+.7*S)}H${f(CX+wa)}`,`M${f(CX-wa)} ${f(wbB-.7*S)}H${f(CX+wa)}`,gold);
+    de+=dstitch(`M${f(CX+2*S)} ${f(wbB)}V${f(L.crotch-4.5*S)}Q${f(CX+2*S)} ${f(L.crotch-1.2*S)} ${f(CX-.2*S)} ${f(L.crotch-1.6*S)}`,`M${f(CX+2.8*S)} ${f(wbB)}V${f(L.crotch-4.5*S)}Q${f(CX+2.8*S)} ${f(L.crotch-.4*S)} ${f(CX-.2*S)} ${f(L.crotch-.8*S)}`,gold);
+    de+=line(`M${CX} ${f(wbB)}V${f(L.crotch-1*S)}`,dk,.6);
+    de+=`<circle cx="${CX}" cy="${f(yTop+1.7*S)}" r="${f(1.3*S)}" fill="url(#brass)" stroke="#6E5420" stroke-width=".5"/><circle cx="${CX}" cy="${f(yTop+1.7*S)}" r="${f(.6*S)}" fill="none" stroke="#6E5420" stroke-width=".4"/>`;
+    return {shade:sh,deco:de};
+  },
+  iris(c){
+    const {L,wa,hi,yTop,hemY,stc,mid}=c;let sh='',de='';
+    [-1,1].forEach(s=>{sh+=`<ellipse cx="${f(CX+s*hi*.45)}" cy="${f(L.hip+2*S)}" rx="${f(hi*.35)}" ry="${f(10*S)}" fill="url(#hl)" opacity=".4"/>`});
+    de+=`<rect x="${f(CX-wa-1*S)}" y="${f(yTop)}" width="${f(2*wa+2*S)}" height="${f(4*S)}" fill="${mid}"/>`;
+    de+=soft(`M${f(CX-wa)} ${f(yTop+4.6*S)}H${f(CX+wa)}`,'#000',.3,1.2);
+    de+=dstitch(`M${f(CX-wa)} ${f(yTop+.8*S)}H${f(CX+wa)}`,`M${f(CX-wa)} ${f(yTop+3.2*S)}H${f(CX+wa)}`,stc);
+    return {shade:sh,deco:de};
+  }
+};
+
+/* ---------- Peça ---------- */
+function buildGarment(p,m,B,an,col){
+  const {L,W}=B,g={};an.zones.forEach(z=>g[z.z]=z);
+  const half=(z,bh)=>{
+    const gz=g[z];if(!gz)return bh+.5*S;
+    if(z==='ombro')return Math.max(W.neck+3*S,gz.g/2*S);
+    return Math.max(bh+.45*S,gz.g/FACT[z]/2*S);
+  };
+  const light=lum(col)>.72;
+  const dk=shade(col,light?-.28:-.42),lt=shade(col,light?.4:.16),mid=shade(col,light?-.06:-.12);
+  const stc=p.tex==='denim'?'#D9A441':(light?shade(col,-.22):shade(col,.3));
+  const hemY=an.hem.y,c={p,B,L,W,an,col,dk,lt,mid,stc,hemY};
+  const O={zoneY:{},disp:{},hemY,dk,sleeve:p.sleeve||null,under:'',shade:'',deco:'',over:''};
+  let sh='',de='';
+  if(p.cat==='vestido'||p.cat==='blusa'||p.cat==='blazer'){
+    const structured=p.neck==='lapela';
+    let s0=half('ombro',W.shoulder);if(structured)s0=Math.max(s0,W.shoulder+.6*S);
+    const bu=half('busto',W.bust),wa=half('cintura',W.waist),hi=half('quadril',W.hip);
+    const drop=Math.max(0,s0-W.shoulder)*.35,shY=structured?L.shoulder+.8*S:L.shoulder+1.6*S+drop;
+    let prof=[[s0,shY],[bu*1.03,L.bust-5*S],[bu,L.bust],[wa,L.waist],[hi,L.hip]];
+    let hh;
+    if(hemY<=L.hip){hh=Math.max(B.outer(hemY)+.45*S,interp(prof,hemY));prof=prof.filter(q=>q[1]<hemY-1.5*S)}
+    else hh=Math.max(B.outer(hemY)+1.2*S,hi+(p.flare||0)*(hemY-L.hip));
+    if(hemY>L.hip+12*S&&(p.flare||0)>0)prof.push([lerp(hi,hh,.45),lerp(L.hip,hemY,.45)]);
+    const curve=p.hem==='curva';
+    prof.push([hh,hemY-(curve?1.4*S:0)]);
+    O.zoneY={ombro:L.shoulder+2.6*S,busto:L.bust,cintura:L.waist,quadril:L.hip};
+    O.disp={ombro:s0,busto:bu,cintura:wa,quadril:hi};O.hemHalf=hh;
+    const R=prof.map(q=>[CX+q[0],q[1]]);
+    const nx=CX+W.neck+1.4*S,ny=L.neck-1.2*S;
+    const nb={v:L.bust-3*S,redondo:L.neck+3*S,gola:L.neck+4.5*S,lapela:L.bust+5*S}[p.neck];
+    const round=p.neck==='redondo';
+    let d=`M${CX} ${f(nb)}`+(round?`Q${f(nx-.6*S)} ${f(nb)} ${f(nx)} ${f(ny)}`:`L${f(nx)} ${f(ny)}`)+cr([[nx,ny],...R]);
+    const hr=R[R.length-1],hl=mir(hr);let hemStitch;
+    if(p.hem==='ondas'){
+      const w=wavePts(hr[0],hl[0],hemY,p.waves.n,p.waves.amp*S,1*S);d+=cr(w.pts);
+      const ws=w.pts.map(q=>[q[0]+(q[0]>CX?-.6:.6),q[1]-1.6*S]);hemStitch=`M${pt(ws[0])}${cr(ws)}`;
+      const topY=L.hip+3*S;
+      w.up.forEach(q=>{sh+=fold([CX+(q[0]-CX)*hi/hh*.8,topY],[q[0],q[1]],(q[0]-CX)*.06,.9)});
+      w.down.forEach(q=>{sh+=soft(`M${f(CX+(q[0]-CX)*hi/hh*.8)} ${f(topY)}Q${f(CX+(q[0]-CX)*.85)} ${f((topY+hemY)/2)} ${f(q[0])} ${f(q[1]-1.5*S)}`,'#fff',.16,4)});
+    }else{
+      const sag=curve?2.8*S:(p.cat==='vestido'?1.2*S:.5*S);
+      d+=`Q${CX} ${f(hemY+sag*2-(curve?1.4*S:0))} ${pt(hl)}`;
+      hemStitch=`M${f(hr[0]-.6)} ${f(hr[1]-1.6*S)}Q${CX} ${f(hemY+sag*2-(curve?1.4*S:0)-1.6*S)} ${f(hl[0]+.6)} ${f(hl[1]-1.6*S)}`;
+    }
+    const Lp=[...R].reverse().map(mir);Lp.push([2*CX-nx,ny]);
+    d+=cr(Lp)+(round?`Q${f(2*CX-nx+.6*S)} ${f(nb)} ${CX} ${f(nb)}`:`L${CX} ${f(nb)}`)+'Z';
+    O.main=d;
+    if(p.fit!=='amplo'){
+      [-1,1].forEach(s=>{sh+=`<ellipse cx="${f(CX+s*bu*.46)}" cy="${f(L.bust-1.2*S)}" rx="${f(bu*.42)}" ry="${f(bu*.4)}" fill="url(#hl)" opacity=".5"/>`});
+      sh+=soft(`M${f(CX-bu*.92)} ${f(L.bust+2*S)}Q${f(CX-bu*.5)} ${f(L.bust+5.4*S)} ${CX} ${f(L.bust+3*S)}Q${f(CX+bu*.5)} ${f(L.bust+5.4*S)} ${f(CX+bu*.92)} ${f(L.bust+2*S)}`,'#000',.22,1.6);
+      if(hemY>L.hip+4*S)[-1,1].forEach(s=>{sh+=`<ellipse cx="${f(CX+s*hi*.5)}" cy="${f(L.hip+2*S)}" rx="${f(hi*.36)}" ry="${f(9*S)}" fill="url(#hl)" opacity=".32"/>`});
+    }
+    de+=stitch(hemStitch,stc);
+    Object.assign(c,{sh:s0,bu,wa,hi,hh,nx,ny,nb});
+  }else if(p.cat==='calca'){
+    const yTop=p.rise==='alta'?L.waist:lerp(L.waist,L.hip,.3);
+    const wa=half('cintura',B.outer(yTop)),hi=half('quadril',W.hip);
+    const lv=B.legs,c0=lv[0],t=lv[1],k=lv[2];
+    const tw=Math.max(t.w+.8*S,g.coxa.g/FACT.coxa*S);
+    const hb=B.legAt(hemY);
+    let kw,hw,kc=k.c,hc=hb.c;
+    if(p.cut==='skinny'){kw=k.w+1.2*S;hw=hb.w+1.6*S}
+    else if(p.cut==='larga'){kw=tw*1.08;hw=tw*1.3;kc=k.c+(kw-k.w)*.12;hc=hb.c+(hw-hb.w)*.18}
+    else{kw=tw*.84;hw=tw*.8}
+    const inner=x=>Math.max(CX+.4*S,x);
+    const Op=[[CX+wa,yTop],[CX+hi,L.hip],[CX+Math.max(hi*.97,c0.c+c0.w/2+.4*S),L.crotch],[CX+t.c+tw/2,t.y]];
+    const Ip=[[inner(CX+hc-hw/2),hemY]];
+    if(hemY>k.y+3*S){Op.push([CX+kc+kw/2,k.y]);Ip.push([inner(CX+kc-kw/2),k.y])}
+    Op.push([CX+hc+hw/2,hemY]);
+    Ip.push([inner(CX+t.c-tw/2),t.y],[CX,L.crotch+2*S]);
+    const IL=[...Ip].reverse().map(mir),OL=[...Op].reverse().map(mir);
+    O.main=`M${pt(Op[0])}${cr(Op)}L${pt(Ip[0])}${cr(Ip)}${cr(IL)}L${pt(OL[0])}${cr(OL)}Z`;
+    O.zoneY={cintura:yTop+1.8*S,quadril:L.hip,coxa:t.y};
+    O.disp={cintura:wa,quadril:hi,coxa:t.c+tw/2};O.hemHalf=hc+hw/2;
+    const ow=Math.max(hi,hc+hw/2,t.c+tw/2)+2*S;
+    [-1,1].forEach(s=>{sh+=`<rect x="${f(s>0?CX:CX-ow)}" y="${f(L.crotch-1*S)}" width="${f(ow)}" height="${f(hemY-L.crotch+3*S)}" fill="url(#cylG)" opacity=".85"/>`});
+    sh+=soft(`M${f(CX-hi*.6)} ${f(L.crotch-3*S)}Q${CX} ${f(L.crotch+1*S)} ${f(CX+hi*.6)} ${f(L.crotch-3*S)}`,'#000',.18,1.4);
+    Object.assign(c,{wa,hi,yTop,t,tw,k,kc,kw,hc,hw});
+  }else{
+    const yTop=L.waist,wa=half('cintura',W.waist),hi=half('quadril',W.hip);
+    const hh=Math.max(B.outer(hemY)+1.2*S,hi+(p.flare||0)*(hemY-L.hip));
+    const R=[[CX+wa,yTop],[CX+hi,L.hip],[CX+lerp(hi,hh,.5),lerp(L.hip,hemY,.5)],[CX+hh,hemY]];
+    const w=wavePts(CX+hh,CX-hh,hemY,p.waves.n,p.waves.amp*S,1.4*S);
+    const Lp=[...R].reverse().map(mir);
+    O.main=`M${pt(R[0])}${cr(R)}${cr(w.pts)}${cr(Lp)}Z`;
+    O.zoneY={cintura:yTop+1.8*S,quadril:L.hip};
+    O.disp={cintura:wa,quadril:hi};O.hemHalf=hh;
+    const topY=yTop+5*S;
+    w.up.forEach(q=>{sh+=fold([CX+(q[0]-CX)*wa/hh*.9,topY],[q[0],q[1]],(q[0]-CX)*.05,1)});
+    w.down.forEach(q=>{sh+=soft(`M${f(CX+(q[0]-CX)*wa/hh*.9)} ${f(topY)}Q${f(CX+(q[0]-CX)*.8)} ${f((topY+hemY)/2)} ${f(q[0])} ${f(q[1]-1.5*S)}`,'#fff',.18,4.5)});
+    const ws=w.pts.map(q=>[q[0]+(q[0]>CX?-.6:.6),q[1]-1.6*S]);de+=stitch(`M${pt(ws[0])}${cr(ws)}`,stc);
+    Object.assign(c,{wa,hi,hh,yTop});
+  }
+  // tensão e sobra
+  an.zones.filter(z=>z.applies&&O.zoneY[z.z]!=null).forEach(z=>{
+    const y=O.zoneY[z.z],x=O.disp[z.z];
+    [-1,1].forEach(s=>{
+      const X=CX+s*x;
+      if(z.status==='apertado'||z.status==='justo'){
+        const n=z.status==='apertado'?3:1;
+        for(let i=0;i<n;i++){const yy=y+(i-(n-1)/2)*2.6*S;sh+=fold([X-s*.6*S,yy-1.6*S],[X-s*7*S,yy+.5*S],s*.6*S,z.status==='apertado'?1.1:.7)}
+      }else if(z.status==='folgado'||z.status==='sobrando'){
+        (z.status==='sobrando'?[2.2,5.4]:[2.8]).forEach(o=>{sh+=fold([X-s*o*S,y-6*S],[X-s*(o-.4)*S,y+6*S],s*1.6*S,z.status==='sobrando'?1.1:.8)});
+      }
+    });
+  });
+  const dd=DECO[p.id]?DECO[p.id](c):{};
+  O.under=dd.under||'';O.shade=sh+(dd.shade||'')+edgeShade(O.main);O.deco=de+(dd.deco||'');O.over=dd.over||'';
+  return O;
+}
+
+/* ---------- Desenho ---------- */
+function backdrop(B){
+  const HZ=FLOOR-40;let s='';
+  s+=`<rect x="-700" y="-300" width="1840" height="${HZ+300}" fill="url(#wp)"/>`;
+  s+=`<rect x="-700" y="${HZ-46}" width="1840" height="46" style="fill:var(--wainscot)"/>`;
+  s+=`<rect x="-700" y="${HZ-48}" width="1840" height="2.5" style="fill:var(--wall-b)"/>`;
+  s+=`<rect x="-700" y="${HZ-6}" width="1840" height="6" style="fill:var(--floor-b)"/>`;
+  s+=`<rect x="-700" y="${HZ}" width="1840" height="200" style="fill:var(--floor-a)"/>`;
+  for(let i=1,y=HZ;i<9;i++){y+=3+i*2.2;s+=`<rect x="-700" y="${f(y)}" width="1840" height=".7" style="fill:var(--floor-b)"/>`}
+  s+=`<ellipse cx="${CX}" cy="${f(B.L.bust)}" rx="200" ry="270" fill="url(#glow)"/>`;
+  return s;
+}
+function plinth(B){
+  const w=Math.max(B.W.hip,B.legs[B.legs.length-1].c+5*S)+12*S,y=FLOOR+1;
+  return `<ellipse cx="${CX}" cy="${y+9}" rx="${f(w+8)}" ry="7" fill="#000" opacity=".16"/>`+
+    `<path d="M${f(CX-w)} ${y}V${y+5}A${f(w)} 4.5 0 0 0 ${f(CX+w)} ${y+5}V${y}Z" fill="url(#wood)"/>`+
+    `<ellipse cx="${CX}" cy="${y}" rx="${f(w)}" ry="4.5" fill="url(#woodTop)"/>`+
+    `<ellipse cx="${CX}" cy="${y}" rx="${f(w-1.5)}" ry="3.6" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width=".6"/>`;
+}
+function formSvg(B,skin,id,o){
+  const {L,W}=B,skD=shade(skin,-.2),tape='#3A3140';
+  const layer=d=>`<path d="${d}" fill="${skin}"/><path d="${d}" fill="url(#tx-linen)" opacity="${TEXOP.linen}"/><path d="${d}" fill="url(#cyl)"/>`;
+  let s='';
+  [1,-1].forEach(sd=>{const l=B.legs[B.legs.length-1];s+=`<ellipse cx="${f(CX+sd*l.c)}" cy="${f(FLOOR-1.4*S)}" rx="${f(l.w/2+1*S)}" ry="${f(1.8*S)}" fill="${skD}"/>`});
+  s+=layer(B.paths.legR)+layer(B.paths.legL);
+  const k=B.legs[2];[1,-1].forEach(sd=>{s+=`<ellipse cx="${f(CX+sd*(k.c-k.w*.06))}" cy="${f(L.knee-1*S)}" rx="${f(k.w*.3)}" ry="${f(3.4*S)}" fill="url(#hl)" opacity=".45"/>`});
+  // pescoço + tampa de madeira
+  const nTop=L.chin+1.2*S,nw=W.neck*.86;
+  s+=`<rect x="${f(CX-nw)}" y="${f(nTop)}" width="${f(nw*2)}" height="${f(L.neck-nTop+2*S)}" fill="${skin}"/><rect x="${f(CX-nw)}" y="${f(nTop)}" width="${f(nw*2)}" height="${f(L.neck-nTop+2*S)}" fill="url(#cyl)"/>`;
+  s+=layer(B.paths.torso);
+  s+=`<g clip-path="url(#${id}-torso)">`;
+  [-1,1].forEach(sd=>{s+=`<ellipse cx="${f(CX+sd*W.bust*.48)}" cy="${f(L.bust-1.5*S)}" rx="${f(W.bust*.42)}" ry="${f(W.bust*.38)}" fill="url(#hl)" opacity=".55"/>`});
+  s+=soft(`M${f(CX-W.bust*.95)} ${f(L.bust+2*S)}Q${f(CX-W.bust*.5)} ${f(L.bust+5.5*S)} ${CX} ${f(L.bust+3*S)}Q${f(CX+W.bust*.5)} ${f(L.bust+5.5*S)} ${f(CX+W.bust*.95)} ${f(L.bust+2*S)}`,'#000',.22,1.6);
+  [-1,1].forEach(sd=>{
+    const P=[[CX+sd*(W.neck+3*S),L.neck+.6*S],[CX+sd*W.bust*.5,L.bust],[CX+sd*W.waist*.45,L.waist],[CX+sd*W.hip*.5,L.hip],[CX+sd*W.hip*.48,L.crotch]];
+    s+=line(`M${pt(P[0])}${cr(P)}`,'#000',.6,.18)+line(`M${f(P[0][0]+.8)} ${f(P[0][1])}${cr(P.map(p=>[p[0]+.8,p[1]]))}`,'#fff',.5,.25);
+  });
+  s+=line(`M${CX} ${f(L.neck)}V${f(L.crotch)}`,'#000',.6,.16);
+  [[L.bust,W.bust],[L.waist,W.waist],[L.hip,W.hip]].forEach(([yy,w])=>{s+=`<path d="M${f(CX-w-2)} ${f(yy)}Q${CX} ${f(yy+2.2*S)} ${f(CX+w+2)} ${f(yy)}" fill="none" stroke="${tape}" stroke-width="1.3" stroke-opacity=".75"/>`});
+  s+=`</g>`;
+  const cy=nTop;
+  s+=`<rect x="${f(CX-nw*1.18)}" y="${f(cy-.4*S)}" width="${f(nw*2.36)}" height="${f(1.6*S)}" fill="url(#wood)"/>`;
+  s+=`<ellipse cx="${CX}" cy="${f(cy-.4*S)}" rx="${f(nw*1.18)}" ry="${f(1.3*S)}" fill="url(#woodTop)"/>`;
+  s+=`<rect x="${f(CX-.5*S)}" y="${f(cy-3*S)}" width="${f(1*S)}" height="${f(2.6*S)}" fill="#8E6A2C"/><circle cx="${CX}" cy="${f(cy-3.6*S)}" r="${f(1.6*S)}" fill="url(#brass)"/>`;
+  if(o.ruler)s+=`<ellipse cx="${CX}" cy="${f((L.top+L.chin)/2)}" rx="${f(7.2*S)}" ry="${f((L.chin-L.top)/2)}" fill="none" style="stroke:var(--muted)" stroke-width=".8" stroke-dasharray="2 3" opacity=".55"/>`;
+  return s;
+}
+function armsSvg(B,skin){
+  const A=B.arms,a=armPath(A,1e4,A.upW,A.foW,1,1);
+  const ang=Math.atan2(a.nrm[1],a.nrm[0])*180/Math.PI;
+  const one=`<path d="${a.d}" fill="${skin}" stroke="${shade(skin,-.3)}" stroke-width=".6"/><path d="${a.d}" fill="url(#tx-linen)" opacity="${TEXOP.linen}"/><path d="${a.d}" fill="url(#cyl)"/>`+
+    `<ellipse cx="${f(a.end[0])}" cy="${f(a.end[1])}" rx="${f(A.foW/2+.6*S)}" ry="${f(1.3*S)}" transform="rotate(${f(ang)} ${f(a.end[0])} ${f(a.end[1])})" fill="url(#woodTop)" stroke="#5E3B26" stroke-width=".5"/>`;
+  return one+`<g transform="matrix(-1 0 0 1 ${2*CX} 0)">${one}</g>`;
+}
+function sleevesSvg(B,sl,col,p,dk,stc,id){
+  const A=B.arms,a=armPath(A,sl.len*S,A.upW+sl.extra*S,A.foW+sl.extra*.8*S,sl.flare||1,sl.puff||1);
+  const last=a.pts.length-1,E=a.end,n=a.nrm,dv=a.dir,w=a.ws[last];
+  const at=(back,off)=>[E[0]-dv[0]*back+n[0]*off,E[1]-dv[1]*back+n[1]*off];
+  let inner=edgeShade(a.d);
+  if(a.long){
+    const el=A.el,wE=a.ws[1];
+    [-2.5,1.5].forEach(o=>{const c0=[el[0]+dv[0]*o*S,el[1]+dv[1]*o*S];inner+=fold([c0[0]+n[0]*wE*.42,c0[1]+n[1]*wE*.42-1*S],[c0[0]-n[0]*wE*.42,c0[1]-n[1]*wE*.42+1*S],1.5*S,.8)});
+    inner+=fold([a.pts[0][0]+n[0]*2*S,a.pts[0][1]+4*S],[el[0]+n[0]*1*S,el[1]-3*S],1*S,.6);
+  }else{
+    inner+=fold([a.pts[0][0]+n[0]*1.5*S,a.pts[0][1]],[E[0]+n[0]*w*.25,E[1]],1*S,.8);
+    inner+=fold([a.pts[0][0]-n[0]*1.5*S,a.pts[0][1]+1*S],[E[0]-n[0]*w*.2,E[1]],-1*S,.6);
+  }
+  if(sl.cuff){
+    const cb=5*S,c1=at(0,w/2),c2=at(0,-w/2),c3=at(cb,-w/2),c4=at(cb,w/2);
+    inner+=soft(`M${pt(c4)}L${pt(c3)}`,'#000',.3,1.2);
+    inner+=`<path d="M${pt(c1)}L${pt(c2)}L${pt(c3)}L${pt(c4)}Z" fill="${shade(col,lum(col)>.72?-.04:.05)}"/>`+stitch(`M${pt(at(cb-.8*S,w/2))}L${pt(at(cb-.8*S,-w/2))}`,stc);
+    for(let i=0;i<(sl.btn||1);i++){const b=at(cb*.5,-w*.25+i*1.6*S*(sl.btn>1?1:0));inner+=button(b[0],b[1],.6*S,col,dk)}
+  }
+  inner+=stitch(`M${pt(at(1.5*S,w/2-.4))}L${pt(at(1.5*S,-w/2+.4))}`,stc);
+  const one=`<path d="${a.d}" fill="${col}"/><path d="${a.d}" fill="url(#tx-${p.tex})" opacity="${TEXOP[p.tex]}"/><path d="${a.d}" fill="url(#cylG)"/><g clip-path="url(#${id}-slv)">${inner}</g><path d="${a.d}" fill="none" stroke="${dk}" stroke-width=".8"/>`;
+  return {svg:one+`<g transform="matrix(-1 0 0 1 ${2*CX} 0)">${one}</g>`,d:a.d};
+}
+function zoneText(z){
+  const e=z.e;
+  switch(z.status){
+    case 'apertado':return e<0?`faltam ${fmt(-e)} cm`:`folga de só ${fmt(e)} cm`;
+    case 'justo':return e<0?`${fmt(-e)} cm a menos, cede`:`folga de ${fmt(e)} cm`;
+    case 'ideal':return `folga ${signed(e)} cm`;
+    default:return `sobram ${fmt(e-z.hi)} cm`;
+  }
+}
+function figureSvg(o){
+  const {m,p,si,ci,id}=o;
+  const B=buildBody(m),{L}=B,skin=SKINS[m.pele];
+  const an=analyze(p,si,m,B),col=p.colors[ci].h,G=buildGarment(p,m,B,an,col);
+  const SL=G.sleeve?sleevesSvg(B,G.sleeve,col,p,G.dk,p.tex==='denim'?'#D9A441':(lum(col)>.72?shade(col,-.22):shade(col,.3)),id):null;
+  let s=`<defs><clipPath id="${id}-clip"><path d="${G.main}"/></clipPath><clipPath id="${id}-torso"><path d="${B.paths.torso}"/></clipPath>${SL?`<clipPath id="${id}-slv"><path d="${SL.d}"/></clipPath>`:''}</defs>`;
+  if(o.backdrop)s+=backdrop(B);
+  if(o.ruler){
+    const x=14,top=FLOOR-200*S;
+    s+=`<rect x="${x+1.5}" y="${f(top+1.5)}" width="16" height="${f(200*S)}" rx="2" fill="#000" opacity=".12"/><rect x="${x}" y="${f(top)}" width="16" height="${f(200*S)}" rx="2" style="fill:var(--tape)"/>`;
+    for(let cm=0;cm<=200;cm+=2){const yy=FLOOR-cm*S,lg=cm%10===0;s+=`<line x1="${x}" x2="${x+(lg?7:cm%5===0?5:3)}" y1="${f(yy)}" y2="${f(yy)}" style="stroke:var(--tape-ink)" stroke-width="${lg?.8:.5}"/>`;if(lg&&cm>0&&cm<200)s+=`<text x="${x+15}" y="${f(yy+2.4)}" text-anchor="end" class="r-num">${cm}</text>`}
+    s+=`<line x1="${x+16}" x2="${f(CX-8*S)}" y1="${f(L.top)}" y2="${f(L.top)}" style="stroke:var(--accent)" stroke-width=".8" stroke-dasharray="3 2"/>`;
+    s+=`<text x="${x+20}" y="${f(L.top-4)}" class="r-h">${fmt(m.altura)} cm</text>`;
+  }
+  s+=plinth(B)+formSvg(B,skin,id,o);
+  s+=G.under;
+  s+=`<path d="${G.main}" fill="#000" opacity=".25" filter="url(#bshadow)" transform="translate(1.2 2.6)"/>`;
+  s+=`<path d="${G.main}" fill="${col}"/><path d="${G.main}" fill="url(#tx-${p.tex})" opacity="${TEXOP[p.tex]}"/><path d="${G.main}" fill="url(#cylG)"/>`;
+  s+=`<g clip-path="url(#${id}-clip)">${G.shade}${G.deco}`;
+  if(o.heat)an.zones.filter(z=>z.applies&&G.zoneY[z.z]!=null).forEach(z=>{const y=G.zoneY[z.z],h=(z.z==='ombro'?5:8)*S;s+=`<rect x="${CX-140}" y="${f(y-h/2)}" width="280" height="${f(h)}" fill="url(#hb-${z.status})" opacity=".72"/>`});
+  s+=`</g><path d="${G.main}" fill="none" stroke="${G.dk}" stroke-width=".9" stroke-linejoin="round"/>`;
+  s+=G.over;
+  if(o.outline)s+=`<path d="${B.paths.outline}" fill="none" style="stroke:var(--ink)" stroke-width=".9" stroke-dasharray="2.4 2.2" opacity=".6"/>`;
+  s+=armsSvg(B,skin);
+  if(SL)s+=SL.svg;
+  if(o.callouts){
+    const items=an.zones.filter(z=>z.applies&&G.zoneY[z.z]!=null).map(z=>({y:G.zoneY[z.z],x:CX+G.disp[z.z],title:ZONE_LABEL[z.z],status:STATUS[z.status].label,color:sv(z.status),val:zoneText(z)}));
+    items.push({y:G.hemY,x:CX+G.hemHalf,title:'Comprimento',status:an.hem.label.split(':')[0].replace(/,.*/,''),color:'var(--ink)',val:p.cat==='calca'?`barra ${signed(an.hem.diff)} cm`:`${fmt(an.hem.len)} cm`});
+    items.sort((a,b)=>a.y-b.y);
+    const gap=36,LX=300;
+    items.forEach((it,i)=>{it.ly=i?Math.max(it.y,items[i-1].ly+gap):Math.max(it.y,30)});
+    for(let i=items.length-1;i>=0;i--){const lim=i===items.length-1?520:items[i+1].ly-gap;if(items[i].ly>lim)items[i].ly=lim}
+    items.forEach(it=>{
+      s+=`<path d="M${f(it.x+3)} ${f(it.y)}L${LX-12} ${f(it.ly)}H${LX-4}" fill="none" style="stroke:${it.color}" stroke-width=".8" opacity=".85"/>`;
+      s+=`<circle cx="${f(it.x)}" cy="${f(it.y)}" r="3.2" style="fill:${it.color};stroke:var(--surface)" stroke-width="1.4"/>`;
+      s+=`<text x="${LX}" y="${f(it.ly-9)}" class="c-title">${it.title}</text>`;
+      s+=`<text x="${LX}" y="${f(it.ly+3.5)}" class="c-status" style="fill:${it.color}">${it.status}</text>`;
+      s+=`<text x="${LX}" y="${f(it.ly+14)}" class="c-val">${it.val}</text>`;
+    });
+  }
+  return {svg:s,an,B,G};
+}
+function thumbSvg(m,p,si,ci,id){
+  const r=figureSvg({m,p,si,ci,id});
+  const {L}=r.B,top=L.chin-6*S;
+  const bottom=(p.cat==='blusa'||p.cat==='blazer')?L.knee:FLOOR+14;
+  const h=bottom-top,w=h*.8;
+  return `<svg viewBox="${f(CX-w/2)} ${f(top)} ${f(w)} ${f(h)}" aria-hidden="true">${r.svg}</svg>`;
+}
+
+/* ---------- Estado ---------- */
+const state={
+  m:Object.assign({},DEFAULT_M,store.get('provador.m',{})),
+  pid:'lina',si:2,ci:0,sizeManual:false,heat:true,outline:true,filter:'todos',
+  cart:store.get('provador.cart',[])
+};
+function product(){return PRODUCTS.find(p=>p.id===state.pid)}
+function selectProduct(id){
+  state.pid=id;const p=product(),B=buildBody(state.m);
+  state.si=recommend(p,state.m,B);state.ci=bestColor(p,state.m);state.sizeManual=false;
+}
+
+/* ---------- Render ---------- */
+function renderFields(){
+  $('#fields').innerHTML=MFIELDS.map(F=>`<div class="field"><label for="m-${F.k}">${F.label}<small>${F.hint}</small></label><div class="num"><input id="m-${F.k}" type="number" inputmode="decimal" step="0.5" min="${F.min}" max="${F.max}" value="${state.m[F.k]}"><span>cm</span></div></div>`).join('');
+  MFIELDS.forEach(F=>{
+    const el=$('#m-'+F.k);
+    el.addEventListener('input',()=>{
+      const v=parseFloat(el.value),ok=!isNaN(v)&&v>=F.min&&v<=F.max;
+      el.parentElement.classList.toggle('bad',!ok);
+      if(ok){state.m[F.k]=v;onMeasure()}
+    });
+    el.addEventListener('change',()=>{
+      let v=parseFloat(el.value);if(isNaN(v))v=state.m[F.k];v=Math.min(F.max,Math.max(F.min,v));
+      el.value=v;el.parentElement.classList.remove('bad');state.m[F.k]=v;onMeasure();
+    });
+  });
+  $('#skins').innerHTML=SKINS.map((c,i)=>`<button type="button" style="background:${c}" aria-label="Tom ${i+1}" aria-pressed="${state.m.pele===i}" data-i="${i}"></button>`).join('');
+  document.querySelectorAll('#subtom button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===state.m.subtom));
+}
+let raf=0;
+function onMeasure(){
+  store.set('provador.m',state.m);
+  const isDefault=MFIELDS.every(F=>state.m[F.k]===DEFAULT_M[F.k]);
+  $('#exampleNote').textContent=isDefault?'Medidas de exemplo. Troque pelas suas.':'Suas medidas ficam salvas neste navegador.';
+  if(!state.sizeManual)state.si=recommend(product(),state.m,buildBody(state.m));
+  cancelAnimationFrame(raf);raf=requestAnimationFrame(renderAll);
+}
+function renderBodyType(){
+  const bt=bodyType(state.m);
+  $('#bodytype').innerHTML=`<div class="eyebrow">Seu biotipo</div><strong>${bt.name}</strong><p>${bt.desc}</p><div class="ratio">cintura/quadril ${bt.whr.toFixed(2).replace('.',',')} · busto−quadril ${signed(state.m.busto-state.m.quadril)} cm</div>`;
+}
+function renderStage(){
+  const p=product();
+  const r=figureSvg({m:state.m,p,si:state.si,ci:state.ci,id:'main',heat:state.heat,outline:state.outline,callouts:true,ruler:true,backdrop:true});
+  $('#figure').innerHTML=r.svg;
+  $('#legend').innerHTML=['apertado','justo','ideal','folgado','sobrando'].map(st=>`<span><i style="background:${sv(st)}"></i>${STATUS[st].label}</span>`).join('')+(state.outline?`<span><i style="background:none;border:1px dashed var(--ink)"></i>Seu corpo</span>`:'');
+  return r;
+}
+function renderDetail(r){
+  const p=product(),m=state.m,B=r.B,an=r.an;
+  const rec=recommend(p,m,B),c=compat(p,an,m,state.ci),[vt,vc]=verdict(c.score);
+  const sizeBtns=SIZES.map((sz,i)=>{const a=analyze(p,i,m,B),w=worst(a);return `<button type="button" data-si="${i}" aria-pressed="${i===state.si}" aria-label="Tamanho ${sz}, ${STATUS[w].label}">${i===rec?'<span class="rec">Sugerido</span>':''}${sz}<span class="dot" style="background:${sv(w)}"></span></button>`}).join('');
+  const rows=an.zones.map(z=>z.applies?`<tr><td>${ZONE_LABEL[z.z]}${z.z==='cintura'&&p.rise==='media'?' <small style="color:var(--muted)">(cós)</small>':''}</td><td class="n">${fmt(z.body)}</td><td class="n">${fmt(z.g)}</td><td class="n">${signed(z.e)}</td><td><span class="pill" style="color:${sv(z.status)};background:color-mix(in srgb,${sv(z.status)} 15%,transparent)">${STATUS[z.status].label}</span></td></tr>`:`<tr class="na"><td>${ZONE_LABEL[z.z]}</td><td colspan="4">A peça termina antes do quadril</td></tr>`).join('');
+  const C=2*Math.PI*30,off=C*(1-c.score/100);
+  const color=p.colors[state.ci];
+  $('#detail').innerHTML=`
+    <div class="eyebrow">${CAT_LABEL[p.cat]} · ${p.fabric}</div>
+    <h2>${p.name}</h2>
+    <p class="price">${brl(p.price)}</p>
+    <p class="desc">${p.desc}</p>
+    <div class="block">
+      <div class="block-head"><h3>Cor</h3><span class="val">${color.n}</span></div>
+      <div class="colors">${p.colors.map((cl,i)=>`<button type="button" data-ci="${i}" style="background:${cl.h}" aria-label="${cl.n}" aria-pressed="${i===state.ci}"></button>`).join('')}</div>
+    </div>
+    <div class="block">
+      <div class="block-head"><h3>Tamanho</h3><span class="val">${SIZES[state.si]}</span></div>
+      <div class="sizes" style="margin-top:6px">${sizeBtns}</div>
+      <div class="rec-line">Para suas medidas, sugerimos o <b>${SIZES[rec]}</b>.${p.stretch>0?` O tecido cede até ${Math.round(p.stretch*100)}%.`:' O tecido não tem elasticidade.'}</div>
+    </div>
+    <div class="block">
+      <h3>Como veste em você</h3>
+      <div class="tbl-wrap"><table class="fit">
+        <thead><tr><th>Medida</th><th class="n">Você</th><th class="n">Peça</th><th class="n">Folga</th><th></th></tr></thead>
+        <tbody>${rows}<tr><td>Compr.</td><td colspan="4">${an.hem.label}</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="block">
+      <h3>Combina com seu perfil?</h3>
+      <div class="compat">
+        <div class="ring"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" style="stroke:var(--line)" stroke-width="6"/><circle cx="36" cy="36" r="30" fill="none" style="stroke:var(${vc})" stroke-width="6" stroke-linecap="round" stroke-dasharray="${f(C)}" stroke-dashoffset="${f(off)}"/></svg><b>${c.score}</b></div>
+        <div><div class="verdict">${vt}</div><div class="btline">Biotipo ${c.bt.name.toLowerCase()} · subtom ${m.subtom}</div></div>
+      </div>
+      <ul class="reasons">${c.reasons.map(rs=>`<li><span class="d" style="color:var(${rs.d>0?'--ideal':'--tight'})">${rs.d>0?'+':'−'}${Math.abs(rs.d)}</span><span>${rs.t}</span></li>`).join('')}</ul>
+    </div>
+    <button class="add" type="button" id="addBtn">Adicionar à sacola · ${SIZES[state.si]}</button>
+    <p class="added" id="addedMsg"></p>`;
+}
+function renderCatalog(){
+  const m=state.m,B=buildBody(m);
+  const cats=[['todos','Todos'],['vestido','Vestidos'],['blusa','Blusas'],['blazer','Blazers'],['calca','Calças'],['saia','Saias']];
+  $('#chips').innerHTML=cats.map(([k,l])=>`<button type="button" data-f="${k}" aria-pressed="${state.filter===k}">${l}</button>`).join('');
+  $('#grid').innerHTML=PRODUCTS.filter(p=>state.filter==='todos'||p.cat===state.filter).map(p=>{
+    const si=recommend(p,m,B),ci=bestColor(p,m),an=analyze(p,si,m,B),c=compat(p,an,m,ci),[,vc]=verdict(c.score);
+    return `<button type="button" class="card${p.id===state.pid?' on':''}" data-pid="${p.id}">
+      <div class="thumb">${thumbSvg(m,p,si,ci,'t-'+p.id)}</div>
+      <div class="info"><span class="nm">${p.name}</span><span class="pr">${brl(p.price)}</span>
+      <span class="meta"><span class="sz">Seu tamanho <b>${SIZES[si]}</b></span><span class="pill" style="color:var(${vc});background:color-mix(in srgb,var(${vc}) 15%,transparent)">${c.score}% compatível</span></span></div>
+    </button>`;
+  }).join('');
+}
+function renderBag(){
+  const n=state.cart.length;$('#bagN').textContent=n;
+  $('#items').innerHTML=n?state.cart.map((it,i)=>{const p=PRODUCTS.find(x=>x.id===it.pid);const c=p.colors[it.ci];return `<div class="item"><span class="sw" style="background:${c.h}"></span><div><div class="t">${p.name}</div><div class="s">${c.n} · tamanho ${SIZES[it.si]}</div></div><div class="p">${brl(p.price)}<button class="linkbtn rm" type="button" data-rm="${i}">Remover</button></div></div>`}).join(''):'<p class="empty">Sua sacola está vazia.</p>';
+  $('#total').textContent=brl(state.cart.reduce((s,it)=>s+PRODUCTS.find(x=>x.id===it.pid).price,0));
+  store.set('provador.cart',state.cart);
+}
+function renderAll(){
+  renderBodyType();
+  const r=renderStage();
+  renderDetail(r);
+  renderCatalog();
+  renderBag();
+}
+
+/* ---------- Eventos ---------- */
+$('#skins').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.m.pele=+b.dataset.i;document.querySelectorAll('#skins button').forEach(x=>x.setAttribute('aria-pressed',x===b));onMeasure()});
+$('#subtom').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.m.subtom=b.dataset.v;document.querySelectorAll('#subtom button').forEach(x=>x.setAttribute('aria-pressed',x===b));state.ci=bestColor(product(),state.m);onMeasure()});
+$('#resetBtn').addEventListener('click',()=>{state.m=Object.assign({},DEFAULT_M);state.sizeManual=false;renderFields();onMeasure()});
+$('#tgHeat').addEventListener('change',e=>{state.heat=e.target.checked;renderAll()});
+$('#tgOutline').addEventListener('change',e=>{state.outline=e.target.checked;renderAll()});
+$('#detail').addEventListener('click',e=>{
+  const s=e.target.closest('[data-si]'),c=e.target.closest('[data-ci]');
+  if(s){state.si=+s.dataset.si;state.sizeManual=true;renderAll();return}
+  if(c){state.ci=+c.dataset.ci;renderAll();return}
+  if(e.target.closest('#addBtn')){
+    state.cart.push({pid:state.pid,si:state.si,ci:state.ci});renderBag();
+    const p=product();$('#addedMsg').textContent=`${p.name} (${SIZES[state.si]}) adicionado à sacola`;
+  }
+});
+$('#chips').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;state.filter=b.dataset.f;renderCatalog()});
+$('#grid').addEventListener('click',e=>{const b=e.target.closest('[data-pid]');if(!b)return;selectProduct(b.dataset.pid);renderAll();document.getElementById('provador').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
+const openBag=()=>{$('#drawer').hidden=false;$('#scrim').hidden=false;$('#demoMsg').textContent='';$('#closeBag').focus()};
+const closeBag=()=>{$('#drawer').hidden=true;$('#scrim').hidden=true;$('#bagBtn').focus()};
+$('#bagBtn').addEventListener('click',openBag);
+$('#closeBag').addEventListener('click',closeBag);
+$('#scrim').addEventListener('click',closeBag);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#drawer').hidden)closeBag()});
+$('#items').addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)return;state.cart.splice(+b.dataset.rm,1);renderBag()});
+$('#checkout').addEventListener('click',()=>{$('#demoMsg').textContent=state.cart.length?'Loja de demonstração: nenhum pagamento é processado.':'Adicione uma peça antes de finalizar.'});
+
+/* ---------- Início ---------- */
+initDefs();
+renderFields();
+selectProduct('lina');
+onMeasure();
+renderAll();
+</script>
